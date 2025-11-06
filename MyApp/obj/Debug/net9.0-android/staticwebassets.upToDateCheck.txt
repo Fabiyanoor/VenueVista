@@ -1,0 +1,2 @@
+wwwroot\index.html
+D:\VenueVista\MyApp\MyApp\wwwroot\index.html

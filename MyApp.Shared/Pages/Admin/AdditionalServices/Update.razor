@@ -1,0 +1,205 @@
+﻿@page "/additional-services/{Id:guid}/edit"
+@layout AdminLayout
+@using MyApp.Shared.Dtos.Venue
+@inject IAdditionalServiceService AdditionalServiceService
+@inject IVenueService VenueService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Edit Additional Service</h1>
+            <p class="mt-2 text-gray-600">Update the service details</p>
+        </div>
+
+        <!-- Form -->
+        <div class="animate-slide-up rounded-lg bg-white p-6 shadow-md">
+            <!-- Error Message -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                    <p class="text-sm text-red-600">@errorMessage</p>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="mb-4 rounded-md border border-green-200 bg-green-50 p-3">
+                    <p class="text-sm text-green-600">@successMessage</p>
+                </div>
+            }
+
+            @if (service != null)
+            {
+                <!-- Venue Display (Read-only) -->
+                <div class="mb-4">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Venue</label>
+                    <div class="rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700">
+                        @service.VenueName
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Venue cannot be changed for an existing service</p>
+                </div>
+
+                <!-- Service Name -->
+                <div class="mb-4">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Service Name *</label>
+                    <input type="text" @bind="service.Name"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black transition-colors focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                           placeholder="Enter service name" />
+                    @if (string.IsNullOrEmpty(service.Name) && isSubmitted)
+                    {
+                        <p class="mt-1 text-sm text-red-600">Service name is required</p>
+                    }
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                    <textarea @bind="service.Description"
+                              class="w-full rounded-md border border-gray-300 px-3 py-2 text-black transition-colors focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                              placeholder="Enter service description (optional)"
+                              rows="3"></textarea>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-6">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Price *</label>
+                    <input type="number" @bind="service.Price" step="0.01" min="0"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black transition-colors focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                           placeholder="Enter price" />
+                    @if (service.Price <= 0 && isSubmitted)
+                    {
+                        <p class="mt-1 text-sm text-red-600">Price must be greater than 0</p>
+                    }
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end gap-3">
+                    <button type="button" @onclick="Cancel"
+                            class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                        Cancel
+                    </button>
+                    <button type="button" @onclick="HandleSubmit"
+                            disabled="@isSubmitting"
+                            class="rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                        @if (isSubmitting)
+                        {
+                            <span class="flex items-center">
+                                <svg class="mr-2 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Updating...
+                            </span>
+                        }
+                        else
+                        {
+                            <span>Update Service</span>
+                        }
+                    </button>
+                </div>
+            }
+            else
+            {
+                <div class="text-center text-gray-600">Loading service details...</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private AdditionalServiceDto service;
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isSubmitting = false;
+    private bool isSubmitted = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadService();
+    }
+
+    private async Task LoadService()
+    {
+        try
+        {
+            var result = await AdditionalServiceService.GetByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                service = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load service: {ex.Message}";
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        isSubmitted = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+
+        // Validation
+        if (string.IsNullOrEmpty(service.Name))
+        {
+            errorMessage = "Service name is required";
+            return;
+        }
+
+        if (service.Price <= 0)
+        {
+            errorMessage = "Price must be greater than 0";
+            return;
+        }
+
+        isSubmitting = true;
+
+        try
+        {
+            var dto = new CreateAdditionalServiceDto
+            {
+                VenueId = service.VenueId,
+                Name = service.Name.Trim(),
+                Description = service.Description?.Trim() ?? string.Empty,
+                Price = service.Price
+            };
+
+            var result = await AdditionalServiceService.UpdateAsync(Id, dto);
+            if (result.IsSuccess)
+            {
+                successMessage = "Service updated successfully!";
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/additional-services");
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/additional-services");
+    }
+}

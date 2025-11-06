@@ -1,0 +1,117 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\08204771-6da2-4b7c-a382-5cc046ad7481_0_20251024060452_02bc59c6.jpg",
+      "PackagePath": "staticwebassets\\Images\\08204771-6da2-4b7c-a382-5cc046ad7481_0_20251024060452_02bc59c6.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\0a894e42-3d91-4d3e-8d5e-24b1f7ce276c_0_20251106213904_6d31ddce.jpg",
+      "PackagePath": "staticwebassets\\Images\\0a894e42-3d91-4d3e-8d5e-24b1f7ce276c_0_20251106213904_6d31ddce.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\104447bd-fef5-4d63-9700-4e3ef4f862f8_0_20251106213521_ee1aeada.jpg",
+      "PackagePath": "staticwebassets\\Images\\104447bd-fef5-4d63-9700-4e3ef4f862f8_0_20251106213521_ee1aeada.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\48a5f1ac-303a-48ce-8600-276bfd1c5688_0_20251024060407_f725e1da.jpg",
+      "PackagePath": "staticwebassets\\Images\\48a5f1ac-303a-48ce-8600-276bfd1c5688_0_20251024060407_f725e1da.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\8814c273-ea8e-417e-9c61-39a56024ec0f_0_20251024060239_f8445c06.jpg",
+      "PackagePath": "staticwebassets\\Images\\8814c273-ea8e-417e-9c61-39a56024ec0f_0_20251024060239_f8445c06.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\b2a1bb16-db9c-42df-ab1c-2114736da513_0_20251024062347_bf6f3a63.jpg",
+      "PackagePath": "staticwebassets\\Images\\b2a1bb16-db9c-42df-ab1c-2114736da513_0_20251024062347_bf6f3a63.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\bd9e2d59-7ec5-4753-b47d-959e71e773bd_0_20251020214522_52e70453.jpg",
+      "PackagePath": "staticwebassets\\Images\\bd9e2d59-7ec5-4753-b47d-959e71e773bd_0_20251020214522_52e70453.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\bd9e2d59-7ec5-4753-b47d-959e71e773bd_1_20251020214522_ec78dc15.jpg",
+      "PackagePath": "staticwebassets\\Images\\bd9e2d59-7ec5-4753-b47d-959e71e773bd_1_20251020214522_ec78dc15.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\cec46af6-3f2e-4e8a-b0c1-62abf59fb8ea_0_20251020214447_85b92ef1.jpg",
+      "PackagePath": "staticwebassets\\Images\\cec46af6-3f2e-4e8a-b0c1-62abf59fb8ea_0_20251020214447_85b92ef1.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\f14e8941-3d51-4449-82cc-f06dc6db8ffd_0_20251020214913_ffd89bc6.jpg",
+      "PackagePath": "staticwebassets\\Images\\f14e8941-3d51-4449-82cc-f06dc6db8ffd_0_20251020214913_ffd89bc6.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\hero1.jpg",
+      "PackagePath": "staticwebassets\\Images\\hero1.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\hero2.jpg",
+      "PackagePath": "staticwebassets\\Images\\hero2.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\hero3.jpg",
+      "PackagePath": "staticwebassets\\Images\\hero3.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\logo.png",
+      "PackagePath": "staticwebassets\\Images\\logo.png"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\party1.jpg",
+      "PackagePath": "staticwebassets\\Images\\party1.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\venu1.jpg",
+      "PackagePath": "staticwebassets\\Images\\venu1.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\venu2.jpeg",
+      "PackagePath": "staticwebassets\\Images\\venu2.jpeg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\venu3.jpg",
+      "PackagePath": "staticwebassets\\Images\\venu3.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\venu4.jpg",
+      "PackagePath": "staticwebassets\\Images\\venu4.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\wed1.jpg",
+      "PackagePath": "staticwebassets\\Images\\wed1.jpg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\Images\\wed2.jpeg",
+      "PackagePath": "staticwebassets\\Images\\wed2.jpeg"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\css\\outputfile.css",
+      "PackagePath": "staticwebassets\\css\\outputfile.css"
+    },
+    {
+      "Id": "D:\\VenueVista\\MyApp\\MyApp.Shared\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.MyApp.Shared.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.MyApp.Shared.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.build.MyApp.Shared.props",
+      "PackagePath": "build\\MyApp.Shared.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildMultiTargeting.MyApp.Shared.props",
+      "PackagePath": "buildMultiTargeting\\MyApp.Shared.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0\\staticwebassets\\msbuild.buildTransitive.MyApp.Shared.props",
+      "PackagePath": "buildTransitive\\MyApp.Shared.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

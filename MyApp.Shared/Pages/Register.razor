@@ -1,0 +1,98 @@
+﻿@page "/register"
+@using System.ComponentModel.DataAnnotations
+@using MyApp.Shared.Dtos
+@using MyApp.Shared.Dtos.User
+@using MyApp.Shared.Services
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<div class="flex min-h-screen items-center justify-center bg-[#f2f4f3]">
+    <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-[#f5e6d3] p-8 shadow-lg">
+        <!-- Logo / Title -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-[#5c3d2e]">Create Account</h1>
+            <p class="text-gray-700">Register to book your hall</p>
+        </div>
+
+        <!-- Register Form -->
+        <EditForm Model="@registerModel" OnValidSubmit="@HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="mb-4 text-sm text-red-500" />
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <p class="mb-2 text-sm text-red-500">@errorMessage</p>
+            }
+
+            <!-- Name -->
+            <div class="mb-4">
+                <label class="mb-1 block font-medium text-[#5c3d2e]">Full Name</label>
+                <InputText @bind-Value="registerModel.Name"
+                           placeholder="John Doe"
+                           class="w-full rounded-lg border border-[#a0522d] px-4 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => registerModel.Name)" class="text-red-500 text-sm" />
+            </div>
+
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="mb-1 block font-medium text-[#5c3d2e]">Email</label>
+                <InputText @bind-Value="registerModel.Email"
+                           type="email"
+                           placeholder="you@example.com"
+                           class="w-full rounded-lg border border-[#a0522d] px-4 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => registerModel.Email)" class="text-red-500 text-sm" />
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="mb-1 block font-medium text-[#5c3d2e]">Password</label>
+                <InputText @bind-Value="registerModel.Password"
+                           type="password"
+                           placeholder="••••••••"
+                           class="w-full rounded-lg border border-[#a0522d] px-4 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => registerModel.Password)" class="text-red-500 text-sm" />
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-6">
+                <label class="mb-1 block font-medium text-[#5c3d2e]">Confirm Password</label>
+                <InputText @bind-Value="registerModel.ConfirmPassword"
+                           type="password"
+                           placeholder="••••••••"
+                           class="w-full rounded-lg border-1 border-[#a0522d] px-4 py-2 text-black focus:ring-2 focus:outline-none" />
+                <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="text-red-500 text-sm" />
+            </div>
+
+            <!-- Register Button -->
+            <button type="submit"
+                    class="w-full rounded-lg bg-[#a0522d] px-4 py-2 font-semibold text-white shadow-md transition duration-300 hover:bg-[#d2a679]">
+                Register
+            </button>
+        </EditForm>
+
+        <!-- Already have account -->
+        <p class="mt-6 text-center text-sm text-gray-700">
+            Already have an account?
+            <a href="/auth/login" class="font-semibold text-[#a0522d] hover:underline">Login</a>
+        </p>
+    </div>
+</div>
+
+@code {
+    private RegisterModel registerModel = new();
+    private string? errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var result = await AuthService.RegisterAsync(registerModel);
+
+        if (result.IsSuccess)
+        {
+            Navigation.NavigateTo("/auth/login");
+        }
+        else
+        {
+            errorMessage = result.Error;
+        }
+    }
+}

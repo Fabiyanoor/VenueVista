@@ -1,0 +1,193 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows,browser
+build_property.RootNamespace = MyApp.Shared
+build_property.RootNamespace = MyApp.Shared
+build_property.ProjectDir = D:\VenueVista\MyApp\MyApp.Shared\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = D:\VenueVista\MyApp\MyApp.Shared
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Components/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSZWRpcmVjdFRvTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Components/Sidebar.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTaWRlYmFyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Layout/AdminLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEFkbWluTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Layout/Footer.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XEZvb3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Layout/Navbar.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdmJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Layout/UserLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XFVzZXJMYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdditionalServices/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRkaXRpb25hbFNlcnZpY2VzXENyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdditionalServices/Detail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRkaXRpb25hbFNlcnZpY2VzXERldGFpbC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdditionalServices/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRkaXRpb25hbFNlcnZpY2VzXExpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdditionalServices/Update.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRkaXRpb25hbFNlcnZpY2VzXFVwZGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdminVenue/VenueCreate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRtaW5WZW51ZVxWZW51ZUNyZWF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdminVenue/VenueList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRtaW5WZW51ZVxWZW51ZUxpc3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdminVenue/VenueUpdate.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRtaW5WZW51ZVxWZW51ZVVwZGF0ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/AdminVenue/View.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQWRtaW5WZW51ZVxWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Bookings/AdminBooking.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQm9va2luZ3NcQWRtaW5Cb29raW5nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Bookings/BookingDetails.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cQm9va2luZ3NcQm9va2luZ0RldGFpbHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Dashboard.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cRGFzaGJvYXJkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Packages/Create.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGFja2FnZXNcQ3JlYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Packages/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGFja2FnZXNcTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Packages/Update.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGFja2FnZXNcVXBkYXRlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/Packages/View.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cUGFja2FnZXNcVmlldy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/User/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXNlclxMaXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/User/Update.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXNlclxVcGRhdGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Admin/User/View.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5cVXNlclxWaWV3LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Customer/Booking/BookVenue.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcQm9va2luZ1xCb29rVmVudWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Customer/Packages/Detail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcUGFja2FnZXNcRGV0YWlsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Customer/Packages/List.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcUGFja2FnZXNcTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Customer/Packages/PackagesforVenue.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcUGFja2FnZXNcUGFja2FnZXNmb3JWZW51ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Customer/Venue/Venu.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcVmVudWVcVmVudS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Customer/Venue/VenueDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ3VzdG9tZXJcVmVudWVcVmVudWVEZXRhaWwucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Logout.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9nb3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Register.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/Services.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VydmljZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/User/ListBookings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclxMaXN0Qm9va2luZ3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/User/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclxQcm9maWxlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/User/UserDetail.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclxVc2VyRGV0YWlsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/User/UserProfile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclxVc2VyUHJvZmlsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Pages/User/UserSidebar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclxVc2VyU2lkZWJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Um91dGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/VenueVista/MyApp/MyApp.Shared/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 

@@ -1,0 +1,226 @@
+﻿@page "/venues/{Id:guid}"
+@layout AdminLayout
+@using MyApp.Shared.Dtos
+@using MyApp.Shared.Dtos.Venue
+@inject IVenueService VenueService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="animate-fade-in mb-8 flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-900">Venue Details</h1>
+            <button @onclick="NavigateToEdit" class="rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                Edit Venue
+            </button>
+        </div>
+        <!-- Error Message -->
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                <p class="text-sm text-red-600">@errorMessage</p>
+            </div>
+        }
+        <!-- Venue Details -->
+        @if (venue == null)
+        {
+            <div class="text-center text-gray-800">Loading...</div>
+        }
+        else
+        {
+            <div class="animate-slide-up rounded-lg bg-white p-6 shadow-md">
+                <!-- Name and Type -->
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Venue Name</h2>
+                        <p class="text-lg text-gray-900">@venue.Name</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Type</h2>
+                        <p class="text-lg text-gray-900">@venue.Type</p>
+                    </div>
+                </div>
+                <!-- Address -->
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Address</h2>
+                    <p class="text-lg text-gray-900">@venue.Address</p>
+                </div>
+                <!-- Status and Rating -->
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Status</h2>
+                        <p class="text-lg text-gray-900">@venue.Status</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Rating</h2>
+                        <p class="text-lg text-gray-900">@(venue.Rating.ToString("F1"))</p>
+                    </div>
+                </div>
+                <!-- Additional Services -->
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Additional Services</h2>
+                    @if (venue.AdditionalServices.Any())
+                    {
+                        <div class="mt-2 grid grid-cols-1 gap-2">
+                            @foreach (var service in venue.AdditionalServices)
+                            {
+                                <div class="text-sm text-gray-800">
+                                    @service.Name (@(string.IsNullOrEmpty(service.Description) ? "No description" : service.Description)) - $@service.Price
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-lg text-gray-900">No additional services available</p>
+                    }
+                </div>
+                <!-- Packages -->
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Packages</h2>
+                    @if (venue.Packages.Any())
+                    {
+                        <div class="mt-2 grid grid-cols-1 gap-4">
+                            @foreach (var package in venue.Packages)
+                            {
+                                <div class="rounded-md border border-gray-200 p-4">
+                                    <h3 class="text-base font-semibold text-gray-900">@package.Name (@package.Tier)</h3>
+                                    <p class="text-sm text-gray-600">@(string.IsNullOrEmpty(package.Description) ? "No description" : package.Description)</p>
+                                    <p class="mt-2 text-sm text-gray-800">Base Price: $@package.BasePrice</p>
+                                    <p class="text-sm text-gray-800">Base Capacity: @package.BaseCapacity</p>
+                                    <p class="text-sm text-gray-800">Base Duration: @package.BaseDurationHours hours</p>
+                                    <p class="text-sm text-gray-800">Includes: @(package.IncludesDecoration ? "Decoration, " : "")@(package.IncludesCake ? "Cake, " : "")@(package.IncludesSoundSystem ? "Sound System" : "")</p>
+                                    @if (package.PackageServices.Any())
+                                    {
+                                        <div class="mt-2">
+                                            <h4 class="text-sm font-medium text-gray-700">Package Services</h4>
+                                            <div class="mt-1 grid grid-cols-1 gap-2">
+                                                @foreach (var service in package.PackageServices)
+                                                {
+                                                    <div class="text-sm text-gray-800">
+                                                        @service.Name (@(string.IsNullOrEmpty(service.Description) ? "No description" : service.Description)) -
+                                                        @(service.IsIncludedInPackage ? "Included" : $"${service.Price}")
+                                                        @(service.IsAvailableForCustomization ? "(Customizable)" : "")
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-lg text-gray-900">No packages available</p>
+                    }
+                </div>
+                <!-- Images -->
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Images</h2>
+                    @if (venue.ImageUrls != null && venue.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                    {
+                        <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                            @foreach (var imageUrl in venue.ImageUrls.Where(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                            {
+                                <div class="group relative">
+                                    @if (!imageLoaded)
+                                    {
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <svg class="h-5 w-5 animate-spin text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </div>
+                                    }
+                                    <img src="@ResolveImageUrl(imageUrl)" alt="Venue Image" class="h-32 w-full rounded-md object-cover transition-shadow group-hover:shadow-md" @onload="() => imageLoaded = true" @onerror="() => HandleImageError(imageUrl)" />
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-lg text-gray-900">No images available</p>
+                    }
+                </div>
+                <!-- Back Button -->
+                <div class="flex justify-end">
+                    <button @onclick="NavigateBack" class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                        Back to Venues
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    private VenueDto venue;
+    private string errorMessage = string.Empty;
+    private bool imageLoaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenue();
+    }
+
+    private async Task LoadVenue()
+    {
+        try
+        {
+            var result = await VenueService.GetVenueDetailsAsync(Id);
+            if (result.IsSuccess)
+            {
+                venue = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+                venue = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venue details: {ex.Message}";
+            venue = null;
+        }
+        StateHasChanged();
+    }
+
+    private string ResolveImageUrl(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl) || imageUrl == "string")
+            return "/Images/placeholder.jpg";
+        if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+            return imageUrl;
+        var baseUri = Navigation.BaseUri;
+        return new Uri(new Uri(baseUri), $"api/venues/images/{Path.GetFileName(imageUrl)}").ToString();
+    }
+
+    private async Task HandleImageError(string imageUrl)
+    {
+        var resolvedUrl = ResolveImageUrl(imageUrl);
+        await JSRuntime.InvokeVoidAsync("console.log", $"Image failed to load: {imageUrl} (Resolved: {resolvedUrl})");
+        if (venue != null && venue.ImageUrls != null && venue.ImageUrls.Any())
+        {
+            venue.ImageUrls.Remove(imageUrl);
+            imageLoaded = false;
+            errorMessage = $"Failed to load image. It has been removed. Check if the file exists at {resolvedUrl}.";
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToEdit()
+    {
+        Navigation.NavigateTo($"/venues/{Id}/edit");
+    }
+
+    private void NavigateBack()
+    {
+        Navigation.NavigateTo("/venues");
+    }
+}

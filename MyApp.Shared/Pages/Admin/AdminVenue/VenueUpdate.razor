@@ -1,0 +1,363 @@
+﻿@page "/venues/{Id:guid}/edit"
+@layout AdminLayout
+@using MyApp.Shared.Dtos
+@using MyApp.Shared.Dtos.Venue
+@using System.ComponentModel.DataAnnotations
+@inject IVenueService VenueService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Edit Venue</h1>
+            <p class="mt-2 text-gray-600">Update the venue details</p>
+        </div>
+
+        <!-- Form -->
+        <EditForm Model="@venueModel" OnValidSubmit="HandleValidSubmit" class="rounded-lg bg-white p-6 shadow-md">
+            <DataAnnotationsValidator />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                    <p class="text-sm text-red-600">@errorMessage</p>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="mb-4 rounded-md border border-green-200 bg-green-50 p-3">
+                    <p class="text-sm text-green-600">@successMessage</p>
+                </div>
+            }
+
+            <!-- Name -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Venue Name</label>
+                <InputText @bind-Value="venueModel.Name"
+                           @oninput="@(() => isFormDirty = true)"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => venueModel.Name)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Address -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Address</label>
+                <InputText @bind-Value="venueModel.Address"
+                           @oninput="@(() => isFormDirty = true)"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => venueModel.Address)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Type -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Venue Type</label>
+                <InputText @bind-Value="venueModel.Type"
+                           @oninput="@(() => isFormDirty = true)"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => venueModel.Type)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Status -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Status</label>
+                <InputText @bind-Value="venueModel.Status"
+                           @oninput="@(() => isFormDirty = true)"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => venueModel.Status)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Image Upload -->
+            <div class="mb-6">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Venue Images (Max 5, JPEG/PNG, 5MB each)</label>
+                <div class="relative">
+                    <InputFile multiple OnChange="HandleImageUpload"
+                               accept="image/jpeg,image/png"
+                               disabled="@((venueModel.ImageUrls.Count + imageFiles.Count >= 5) || isUploading)"
+                               class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none disabled:bg-gray-100 transition-colors" />
+                    @if (isUploading)
+                    {
+                        <div class="bg-opacity-50 absolute inset-0 flex items-center justify-center rounded-md bg-gray-100">
+                            <span class="text-gray-600">Uploading...</span>
+                        </div>
+                    }
+                </div>
+                @if (venueModel.ImageUrls.Count + imageFiles.Count >= 5)
+                {
+                    <p class="mt-1 text-sm text-yellow-600">Maximum 5 images allowed.</p>
+                }
+                @if (venueModel.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string") || imagePreviews.Any())
+                {
+                    <div class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+                        <!-- Existing Images -->
+                        @foreach (var imageUrl in venueModel.ImageUrls.Where(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                        {
+                            <div class="group relative">
+                                <img src="@ResolveImageUrl(imageUrl)" class="h-32 w-full rounded-md object-cover" @onerror="() => HandleImageError(imageUrl)" />
+                                <button type="button" @onclick="() => RemoveExistingImage(imageUrl)"
+                                        class="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                    &times;
+                                </button>
+                            </div>
+                        }
+                        <!-- New Images -->
+                        @for (int i = 0; i < imageFiles.Count; i++)
+                        {
+                            <div class="group relative">
+                                <img src="@imagePreviews[i]" class="h-32 w-full rounded-md object-cover" />
+                                <button type="button" @onclick="() => RemoveNewImage(i)"
+                                        class="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-600 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                                    &times;
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end gap-3">
+                <button type="button" @onclick="Cancel"
+                        disabled="@isSubmitting"
+                        class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                    Cancel
+                </button>
+                <button type="submit" disabled="@isSubmitting"
+                        class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                    @if (isSubmitting)
+                    {
+                        <span>Updating...</span>
+                    }
+                    else
+                    {
+                        <span>Update Venue</span>
+                    }
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private CreateVenueDto _venueModel = new();
+    private CreateVenueDto venueModel
+    {
+        get => _venueModel;
+        set
+        {
+            _venueModel = value;
+            isFormDirty = true;
+        }
+    }
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isSubmitting = false;
+    private bool isUploading = false;
+    private List<byte[]> imageFiles = new();
+    private List<string> imagePreviews = new();
+    private bool isFormDirty = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenue();
+    }
+
+    private async Task LoadVenue()
+    {
+        try
+        {
+            var result = await VenueService.GetVenueByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                var venue = result.Data;
+                _venueModel = new CreateVenueDto
+                {
+                    Name = venue.Name,
+                    Address = venue.Address,
+                    Type = venue.Type,
+                    Status = venue.Status,
+                    ImageUrls = venue.ImageUrls.ToList()
+                };
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venue: {ex.Message}";
+        }
+        StateHasChanged();
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        if (venueModel.ImageUrls.Count + imageFiles.Count + e.FileCount > 5)
+        {
+            errorMessage = "Cannot upload more than 5 images.";
+            await JSRuntime.InvokeVoidAsync("console.log", "Max image limit exceeded.");
+            isUploading = false;
+            StateHasChanged();
+            return;
+        }
+        isUploading = true;
+        errorMessage = string.Empty;
+        try
+        {
+            foreach (var file in e.GetMultipleFiles(5 - venueModel.ImageUrls.Count - imageFiles.Count))
+            {
+                try
+                {
+                    if (!new[] { "image/jpeg", "image/png" }.Contains(file.ContentType))
+                    {
+                        errorMessage = $"Invalid file type for {file.Name}. Only JPEG and PNG are allowed.";
+                        await JSRuntime.InvokeVoidAsync("console.log", errorMessage);
+                        continue;
+                    }
+                    if (file.Size > 5 * 1024 * 1024)
+                    {
+                        errorMessage = $"File {file.Name} exceeds 5MB limit.";
+                        await JSRuntime.InvokeVoidAsync("console.log", errorMessage);
+                        continue;
+                    }
+                    if (file.Size == 0)
+                    {
+                        errorMessage = $"File {file.Name} is empty.";
+                        await JSRuntime.InvokeVoidAsync("console.log", errorMessage);
+                        continue;
+                    }
+                    var buffer = new byte[file.Size];
+                    var bytesRead = await file.OpenReadStream(5 * 1024 * 1024).ReadAsync(buffer);
+                    if (bytesRead != file.Size)
+                    {
+                        errorMessage = $"Failed to read complete file {file.Name}. Expected {file.Size} bytes, read {bytesRead} bytes.";
+                        await JSRuntime.InvokeVoidAsync("console.log", errorMessage);
+                        continue;
+                    }
+                    var base64 = Convert.ToBase64String(buffer);
+                    var imageUrl = $"data:{file.ContentType};base64,{base64}";
+                    imageFiles.Add(buffer);
+                    imagePreviews.Add(imageUrl);
+                    isFormDirty = true;
+                    await JSRuntime.InvokeVoidAsync("console.log", $"Image added: {file.Name}, Size: {buffer.Length} bytes");
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = $"Failed to process image {file.Name}: {ex.Message}";
+                    await JSRuntime.InvokeVoidAsync("console.log", $"Image processing error: {ex.Message}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error uploading images: {ex.Message}";
+            await JSRuntime.InvokeVoidAsync("console.log", $"Upload error: {ex.Message}");
+        }
+        finally
+        {
+            isUploading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveNewImage(int index)
+    {
+        if (index >= 0 && index < imageFiles.Count && index < imagePreviews.Count)
+        {
+            imageFiles.RemoveAt(index);
+            imagePreviews.RemoveAt(index);
+            isFormDirty = true;
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveExistingImage(string imageUrl)
+    {
+        venueModel.ImageUrls.Remove(imageUrl);
+        isFormDirty = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+
+        try
+        {
+            if (imageFiles.Any())
+            {
+                var uploadResult = await VenueService.UploadVenueImagesAsync(imageFiles, Guid.NewGuid().ToString());
+                if (uploadResult.IsSuccess)
+                {
+                    venueModel.ImageUrls.AddRange(uploadResult.Data);
+                    imagePreviews = venueModel.ImageUrls.Select(ResolveImageUrl).ToList();
+                }
+                else
+                {
+                    errorMessage = uploadResult.Error ?? "Failed to upload images";
+                    isSubmitting = false;
+                    StateHasChanged();
+                    return;
+                }
+            }
+
+            var result = await VenueService.UpdateVenueAsync(Id, venueModel);
+            if (result.IsSuccess)
+            {
+                successMessage = "Venue updated successfully!";
+                imageFiles.Clear();
+                imagePreviews.Clear();
+                isFormDirty = false;
+                await Task.Delay(2000);
+                Navigation.NavigateTo($"/venues/{Id}");
+            }
+            else
+            {
+                errorMessage = result.Error ?? "Failed to update venue";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private string ResolveImageUrl(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl) || imageUrl == "string")
+            return "/Images/placeholder.jpg";
+        if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+            return imageUrl;
+        var baseUri = Navigation.BaseUri;
+        return new Uri(new Uri(baseUri), $"api/venues/images/{Path.GetFileName(imageUrl)}").ToString();
+    }
+
+    private async Task HandleImageError(string imageUrl)
+    {
+        await JSRuntime.InvokeVoidAsync("console.log", $"Image failed to load: {imageUrl}");
+        venueModel.ImageUrls.Remove(imageUrl);
+        isFormDirty = true;
+        StateHasChanged();
+    }
+
+    private async Task Cancel()
+    {
+        if (isFormDirty)
+        {
+            bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "You have unsaved changes. Are you sure you want to cancel?");
+            if (!confirm) return;
+        }
+        Navigation.NavigateTo($"/venues/{Id}");
+    }
+}

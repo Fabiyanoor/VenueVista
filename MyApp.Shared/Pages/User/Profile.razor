@@ -1,0 +1,269 @@
+﻿@page "/profile"
+@using MyApp.Shared.Dtos.User
+@inject IUserService UserService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@layout UserLayout
+
+@attribute [Authorize]
+
+<div class="min-h-screen bg-gray-50 p-6">
+    <div class="mx-auto max-w-4xl">
+        <!-- Header -->
+        <div class="animate-fade-in mb-8">
+            <h1 class="text-3xl font-bold text-[#3e2c24]">My Profile</h1>
+            <p class="mt-2 text-gray-600">View your account information and manage your profile</p>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-6 rounded-md border border-red-200 bg-red-50 p-4">
+                <div class="flex items-center">
+                    <svg class="mr-2 h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-sm text-red-700">@errorMessage</p>
+                </div>
+            </div>
+        }
+
+        @if (userDetails == null)
+        {
+            <!-- Loading State -->
+            <div class="animate-fade-in flex flex-col items-center justify-center py-12">
+                <div class="h-8 w-8 animate-spin rounded-full border-b-2 border-[#a0522d]"></div>
+                <p class="mt-4 text-lg text-gray-600">Loading your profile...</p>
+            </div>
+        }
+        else
+        {
+            <!-- Profile Information -->
+            <div class="animate-slide-up grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <!-- Personal Information Card -->
+                <div class="lg:col-span-2">
+                    <div class="overflow-hidden rounded-lg bg-white shadow-md">
+                        <div class="border-b border-gray-200 bg-[#f5e6d3] px-6 py-4">
+                            <div class="flex items-center justify-between">
+                                <h2 class="text-xl font-semibold text-[#3e2c24]">Personal Information</h2>
+                                <NavLink href="/profile/edit" class="rounded-md bg-[#a0522d] px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                                    Edit Profile
+                                </NavLink>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 gap-6">
+                                <!-- Name -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                                    <div class="mt-1 text-lg text-gray-900">@userDetails.Name</div>
+                                </div>
+
+                                <!-- Email -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                                    <div class="mt-1 text-lg text-gray-900">@userDetails.Email</div>
+                                </div>
+
+                                <!-- Contact Number -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Contact Number</label>
+                                    <div class="mt-1 text-lg text-gray-900">
+                                        @if (string.IsNullOrEmpty(userDetails.ContactNumber))
+                                        {
+                                            <span class="text-gray-400">Not provided</span>
+                                        }
+                                        else
+                                        {
+                                            @userDetails.ContactNumber
+                                        }
+                                    </div>
+                                </div>
+
+                                <!-- Role -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Role</label>
+                                    <div class="mt-1">
+                                        <span class="inline-flex items-center rounded-full bg-[#f5e6d3] px-3 py-1 text-sm font-medium text-[#3e2c24]">
+                                            @userDetails.Role
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings Section -->
+                    @if (userDetails.Bookings != null && userDetails.Bookings.Any())
+                    {
+                        <div class="mt-6 overflow-hidden rounded-lg bg-white shadow-md">
+                            <div class="border-b border-gray-200 bg-[#f5e6d3] px-6 py-4">
+                                <h2 class="text-xl font-semibold text-[#3e2c24]">Recent Bookings</h2>
+                            </div>
+                            <div class="p-6">
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Venue</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Date</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Status</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Total Cost</th>
+                                                <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 bg-white">
+                                            @foreach (var booking in userDetails.Bookings.Take(5))
+                                            {
+                                                <tr class="hover:bg-gray-50">
+                                                    <td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">@booking.VenueName</td>
+                                                    <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-500">@booking.StartTime.ToString("MMM dd, yyyy")</td>
+                                                    <td class="px-6 py-4 whitespace-nowrap">
+                                                        <span class="@GetStatusBadgeClass(booking.Status)">@booking.Status</span>
+                                                    </td>
+                                                    <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">$@booking.TotalCost.ToString("F2")</td>
+                                                    <td class="px-6 py-4 text-sm font-medium whitespace-nowrap">
+                                                        <NavLink href="@($"/user/bookings/{booking.Id}")" class="text-[#a0522d] hover:text-[#3e2c24]">
+                                                            View Details
+                                                        </NavLink>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if (userDetails.Bookings.Count > 5)
+                                {
+                                    <div class="mt-4 text-center">
+                                        <a href="/bookings" class="text-sm font-medium text-[#a0522d] hover:text-[#3e2c24]">
+                                            View all @userDetails.Bookings.Count bookings →
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mt-6 overflow-hidden rounded-lg bg-white shadow-md">
+                            <div class="border-b border-gray-200 bg-[#f5e6d3] px-6 py-4">
+                                <h2 class="text-xl font-semibold text-[#3e2c24]">Recent Bookings</h2>
+                            </div>
+                            <div class="p-6 text-center">
+                                <p class="text-gray-500">No bookings found.</p>
+                                <a href="/Menu" class="mt-2 inline-block text-sm font-medium text-[#a0522d] hover:text-[#3e2c24]">
+                                    Book your first venue →
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Account Summary Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="overflow-hidden rounded-lg bg-white shadow-md">
+                        <div class="border-b border-gray-200 bg-[#f5e6d3] px-6 py-4">
+                            <h2 class="text-xl font-semibold text-[#3e2c24]">Account Summary</h2>
+                        </div>
+                        <div class="p-6">
+                            <dl class="space-y-4">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">User ID</dt>
+                                    <dd class="mt-1 font-mono text-sm text-gray-900">@userDetails.Id.ToString().Substring(0, 8)...</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Account Created</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">@userDetails.CreatedAt.ToString("MMM dd, yyyy")</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Total Bookings</dt>
+                                    <dd class="mt-1 text-sm text-gray-900">@(userDetails.Bookings?.Count ?? 0)</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Account Status</dt>
+                                    <dd class="mt-1">
+                                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                            Active
+                                        </span>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mt-6 overflow-hidden rounded-lg bg-white shadow-md">
+                        <div class="border-b border-gray-200 bg-[#f5e6d3] px-6 py-4">
+                            <h2 class="text-xl font-semibold text-[#3e2c24]">Quick Actions</h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3">
+                                <a href="/bookings" class="flex items-center text-[#a0522d] transition-colors hover:text-[#3e2c24]">
+                                    <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    View All Bookings
+                                </a>
+                                <a href="/Menu" class="flex items-center text-[#a0522d] transition-colors hover:text-[#3e2c24]">
+                                    <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Book New Venue
+                                </a>
+                                <NavLink href="/profile/edit" class="flex items-center text-[#a0522d] transition-colors hover:text-[#3e2c24]">
+                                    <svg class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit Profile
+                                </NavLink>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private UserDetailsDto userDetails;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserProfile();
+    }
+
+    private async Task LoadUserProfile()
+    {
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userId = Guid.Parse(user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+
+            var result = await UserService.GetUserDetailsAsync(userId);
+            if (result.IsSuccess)
+            {
+                userDetails = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load profile: {ex.Message}";
+        }
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "confirmed" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800",
+            "pending" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800",
+            "canceled" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800",
+            _ => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"
+        };
+    }
+}

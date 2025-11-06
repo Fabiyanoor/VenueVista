@@ -1,0 +1,186 @@
+﻿@page "/users/{Id:guid}"
+@layout AdminLayout
+@using MyApp.Shared.Dtos.User
+@using MyApp.Shared.Dtos.Booking
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="animate-fade-in mb-8 flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-900">User Details</h1>
+            <div class="flex gap-3">
+                <button @onclick="NavigateToEdit" class="rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                    Edit User
+                </button>
+                <button @onclick="NavigateBack" class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                    Back to Users
+                </button>
+            </div>
+        </div>
+        <!-- Error Message -->
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                <p class="text-sm text-red-600">@errorMessage</p>
+            </div>
+        }
+        <!-- User Details -->
+        @if (user == null)
+        {
+            <div class="text-center text-gray-800">
+                <svg class="mx-auto h-8 w-8 animate-spin text-[#3e2c24]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+        }
+        else
+        {
+            <div class="animate-slide-up rounded-lg bg-white p-6 shadow-md">
+                <!-- User Information -->
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Name</h2>
+                        <p class="text-lg text-gray-900">@user.Name</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Email</h2>
+                        <p class="text-lg text-gray-900">@user.Email</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Contact Number</h2>
+                        <p class="text-lg text-gray-900">@(string.IsNullOrWhiteSpace(user.ContactNumber) ? "Not provided" : user.ContactNumber)</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Role</h2>
+                        <p class="text-lg text-gray-900">@user.Role</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Joined</h2>
+                        <p class="text-lg text-gray-900">@user.CreatedAt.ToString("MMM dd, yyyy")</p>
+                    </div>
+                </div>
+                <!-- Booking History -->
+                <div class="mt-8">
+                    <h2 class="mb-6 text-2xl font-semibold text-[#3e2c24]">Booking History</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-[#f5e6d3]">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Venue</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Start Time</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">End Time</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Total Cost</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-right text-sm font-semibold text-[#3e2c24]">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                @if (user.Bookings == null)
+                                {
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-800">Loading...</td>
+                                    </tr>
+                                }
+                                else if (!user.Bookings.Any())
+                                {
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-800">No bookings found.</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    @foreach (var booking in user.Bookings)
+                                    {
+                                        <tr class="transition-colors hover:bg-gray-50">
+                                            <td class="px-6 py-4 text-sm text-gray-800">@booking.VenueName</td>
+                                            <td class="px-6 py-4 text-sm text-gray-800">@booking.StartTime.ToString("g")</td>
+                                            <td class="px-6 py-4 text-sm text-gray-800">@booking.EndTime.ToString("g")</td>
+                                            <td class="px-6 py-4 text-sm text-gray-800">$@booking.TotalCost.ToString("F2")</td>
+                                            <td class="px-6 py-4 text-sm text-gray-800">
+                                                <span class="@GetStatusBadgeClass(booking.Status)">@booking.Status</span>
+                                            </td>
+                                            <td class="px-6 py-4 text-right text-sm font-medium">
+                                                <button @onclick="() => NavigateToBookingDetails(booking.Id)" class="text-[#a0522d] hover:text-[#3e2c24]" title="View">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    private UserDetailsDto user;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUser();
+    }
+
+    private async Task LoadUser()
+    {
+        try
+        {
+            var result = await UserService.GetUserDetailsAsync(Id);
+            if (result.IsSuccess)
+            {
+                user = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+                user = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load user: {ex.Message}";
+            user = null;
+        }
+        StateHasChanged();
+    }
+
+    private void NavigateToEdit()
+    {
+        NavigationManager.NavigateTo($"/users/{Id}/edit");
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+
+    private void NavigateToBookingDetails(Guid bookingId)
+    {
+        NavigationManager.NavigateTo($"/user/bookings/{bookingId}");
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "confirmed" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800",
+            "pending" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800",
+            "canceled" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800",
+            _ => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"
+        };
+    }
+}

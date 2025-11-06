@@ -1,0 +1,591 @@
+﻿@page "/venues/book/{venueId:guid}/{packageId:guid?}"
+@using MyApp.Shared.Dtos.Booking
+@using MyApp.Shared.Dtos.Venue
+@using System.Security.Claims
+@inject IBookingService BookingService
+@inject IVenueService VenueService
+@inject IVenuePackageService VenuePackageService
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<PageTitle>Book Venue</PageTitle>
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Book Your Venue</h1>
+            <p class="mt-2 text-lg text-gray-600">Complete your reservation for the perfect event</p>
+        </div>
+
+        @if (isLoading)
+        {
+            <div class="flex justify-center py-12">
+                <div class="h-12 w-12 animate-spin rounded-full border-b-2 border-[#a0522d]"></div>
+            </div>
+        }
+        else if (venue == null)
+        {
+            <div class="py-12 text-center">
+                <p class="text-red-600">Venue not found.</p>
+                <button @onclick="NavigateToVenues" class="mt-4 text-[#a0522d] hover:underline">
+                    Back to Venues
+                </button>
+            </div>
+        }
+        else if (!isAuthenticated)
+        {
+            <div class="py-12 text-center">
+                <p class="text-red-600">Please log in to book a venue.</p>
+                <a href="/auth/login" class="mt-4 text-[#a0522d] hover:underline">Login</a>
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <!-- Left Column - Venue Info and Booking Summary -->
+                <div class="space-y-6 lg:col-span-2">
+                    <!-- Venue Information -->
+                    <div class="rounded-xl bg-white p-6 shadow-sm">
+                        <div class="flex flex-col gap-6 md:flex-row">
+                            @if (venue.ImageUrls != null && venue.ImageUrls.Any())
+                            {
+                                <div class="flex-shrink-0">
+                                    <img src="@ResolveImageUrl(venue.ImageUrls.First())"
+                                         alt="@venue.Name"
+                                         class="h-48 w-full rounded-xl object-cover md:w-64" />
+                                </div>
+                            }
+                            <div class="flex-1 space-y-3">
+                                <div>
+                                    <h2 class="text-2xl font-bold text-gray-900">@venue.Name</h2>
+                                    <p class="mt-1 text-gray-600">@venue.Type</p>
+                                    <p class="text-gray-700">@venue.Address</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="inline-flex items-center rounded-full @GetStatusColor(venue.Status) px-3 py-1 text-sm font-medium">
+                                        @venue.Status
+                                    </span>
+                                </div>
+                                <div class="pt-2">
+                                    <p class="text-sm text-gray-600">Booking as: <span class="font-medium text-gray-900">@userName</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Package -->
+                    @if (selectedPackage != null)
+                    {
+                        <div class="rounded-xl bg-white p-6 shadow-sm">
+                            <div class="mb-4 flex items-center justify-between">
+                                <h3 class="text-xl font-semibold text-gray-900">Selected Package</h3>
+                                <button @onclick="ChangePackage"
+                                        class="text-sm font-medium text-[#a0522d] hover:underline">
+                                    Change Package
+                                </button>
+                            </div>
+                            <div class="rounded-lg border border-gray-200 bg-gray-50/50 p-5">
+                                <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-bold text-gray-900">@selectedPackage.Name</h4>
+                                        <p class="mt-1 text-sm text-gray-600">@(selectedPackage.Description ?? "Comprehensive event package")</p>
+
+                                        <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+                                            <div>
+                                                <span class="text-gray-600">Tier:</span>
+                                                <span class="ml-2 font-medium text-gray-900">@selectedPackage.Tier</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-600">Base Capacity:</span>
+                                                <span class="ml-2 font-medium text-gray-900">@selectedPackage.BaseCapacity people</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-600">Base Duration:</span>
+                                                <span class="ml-2 font-medium text-gray-900">@selectedPackage.BaseDurationHours hours</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-gray-600">Base Price:</span>
+                                                <span class="ml-2 font-medium text-gray-900">$@selectedPackage.BasePrice</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-bold text-[#a0522d]">$@selectedPackage.BasePrice</div>
+                                        <div class="text-sm text-gray-500">base price</div>
+                                    </div>
+                                </div>
+
+                                @if (selectedPackage.PackageServices.Any())
+                                {
+                                    <div class="mt-4 border-t border-gray-200 pt-4">
+                                        <p class="mb-2 text-sm font-medium text-gray-700">Included Services:</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach (var service in selectedPackage.PackageServices.Where(ps => ps.IsIncludedInPackage))
+                                            {
+                                                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                                    @service.Name
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Package Customization -->
+                    @if (selectedPackage != null)
+                    {
+                        <div class="rounded-xl bg-white p-6 shadow-sm">
+                            <h3 class="mb-4 text-xl font-semibold text-gray-900">Customize Your Package</h3>
+                            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Capacity (People)</label>
+                                    <input type="number"
+                                           @bind="modifiedCapacity"
+                                           class="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-[#a0522d] focus:ring-2 focus:ring-[#a0522d]/20"
+                                           min="@selectedPackage.BaseCapacity" />
+                                    <p class="text-xs text-gray-500">Base: @selectedPackage.BaseCapacity people</p>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-medium text-gray-700">Duration (Hours)</label>
+                                    <input type="number"
+                                           @bind="modifiedDurationHours"
+                                           class="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-[#a0522d] focus:ring-2 focus:ring-[#a0522d]/20"
+                                           min="@selectedPackage.BaseDurationHours" />
+                                    <p class="text-xs text-gray-500">Base: @selectedPackage.BaseDurationHours hours</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Additional Services -->
+                    @if (venue.AdditionalServices.Any())
+                    {
+                        <div class="rounded-xl bg-white p-6 shadow-sm">
+                            <h3 class="mb-4 text-xl font-semibold text-gray-900">Additional Services</h3>
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                @foreach (var service in venue.AdditionalServices)
+                                {
+                                    <div class="flex items-start space-x-3 rounded-lg border border-gray-200 p-4 transition-colors hover:border-[#a0522d]/30">
+                                        <input type="checkbox"
+                                               id="@($"service-{service.Id}")"
+                                               checked="@selectedServiceIds.Contains(service.Id)"
+                                               @onchange="e => ToggleService(service.Id, e.Value)"
+                                               class="mt-1 h-4 w-4 rounded border-gray-300 text-[#a0522d] focus:ring-[#a0522d]" />
+                                        <div class="min-w-0 flex-1">
+                                            <label for="@($"service-{service.Id}")" class="block cursor-pointer text-sm font-medium text-gray-900">
+                                                @service.Name
+                                            </label>
+                                            <p class="mt-1 line-clamp-2 text-sm text-gray-600">@(service.Description ?? "No description available")</p>
+                                            <p class="mt-1 text-sm font-semibold text-[#a0522d]">$@service.Price</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Right Column - Booking Summary and Actions -->
+                <div class="space-y-6">
+                    <!-- Availability Check -->
+                    <div class="rounded-xl border-2 @GetAvailabilityBorderColor() bg-white p-6 shadow-sm">
+                        <h3 class="mb-4 text-xl font-semibold text-gray-900">Check Availability</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-gray-700">Start Date</label>
+                                <input type="date"
+                                       @bind="startDate"
+                                       @bind:format="yyyy-MM-dd"
+                                       class="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-[#a0522d] focus:ring-2 focus:ring-[#a0522d]/20" />
+                            </div>
+                            <div>
+                                <label class="mb-2 block text-sm font-medium text-gray-700">Duration (Days)</label>
+                                <input type="number"
+                                       @bind="duration"
+                                       class="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 transition-colors focus:border-[#a0522d] focus:ring-2 focus:ring-[#a0522d]/20"
+                                       min="1" />
+                                <span class="mt-1 block text-sm text-gray-500">Total days for your event</span>
+                            </div>
+                            <button @onclick="CheckAvailability"
+                                    disabled="@isCheckingAvailability"
+                                    class="w-full rounded-lg bg-[#a0522d] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#8b4513] focus:ring-2 focus:ring-[#a0522d] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+                                @if (isCheckingAvailability)
+                                {
+                                    <span class="flex items-center justify-center">
+                                        <svg class="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Checking...
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>Check Availability</span>
+                                }
+                            </button>
+                        </div>
+
+                        @if (availabilityResult != null)
+                        {
+                            <div class="mt-4 border-t border-gray-200 pt-4">
+                                @if (availabilityResult.IsAvailable)
+                                {
+                                    <div class="rounded-lg bg-green-50 p-4">
+                                        <div class="flex items-center">
+                                            <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="ml-2 text-sm font-medium text-green-800">Venue is available!</span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="rounded-lg bg-red-50 p-4">
+                                        <div class="flex items-center">
+                                            <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                            </svg>
+                                            <span class="ml-2 text-sm font-medium text-red-800">Venue is not available</span>
+                                        </div>
+                                        @if (availabilityResult.BookedDates.Any())
+                                        {
+                                            <div class="mt-3">
+                                                <p class="text-sm font-medium text-gray-700">Conflicting dates:</p>
+                                                <div class="mt-2 flex flex-wrap gap-1">
+                                                    @foreach (var date in availabilityResult.BookedDates.Take(4))
+                                                    {
+                                                        <span class="rounded bg-red-100 px-2 py-1 text-xs text-red-800">
+                                                            @date.ToString("MMM dd")
+                                                        </span>
+                                                    }
+                                                    @if (availabilityResult.BookedDates.Count > 4)
+                                                    {
+                                                        <span class="rounded bg-red-100 px-2 py-1 text-xs text-red-800">
+                                                            +@(availabilityResult.BookedDates.Count - 4) more
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Booking Summary -->
+                    <div class="rounded-xl bg-white p-6 shadow-sm">
+                        <h3 class="mb-4 text-xl font-semibold text-gray-900">Booking Summary</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Base Package</span>
+                                <span class="font-medium text-gray-900">$@(selectedPackage?.BasePrice ?? 0)</span>
+                            </div>
+
+                            @if (modifiedCapacity.HasValue && modifiedCapacity > selectedPackage?.BaseCapacity)
+                            {
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Capacity Extension</span>
+                                    <span class="font-medium text-gray-900">
+                                        $@((modifiedCapacity.Value - selectedPackage.BaseCapacity) * selectedPackage.PricePerAdditionalPerson)
+                                    </span>
+                                </div>
+                            }
+
+                            @if (modifiedDurationHours.HasValue && modifiedDurationHours > selectedPackage?.BaseDurationHours)
+                            {
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Duration Extension</span>
+                                    <span class="font-medium text-gray-900">
+                                        $@((modifiedDurationHours.Value - selectedPackage.BaseDurationHours) * selectedPackage.PricePerAdditionalHour)
+                                    </span>
+                                </div>
+                            }
+
+                            @if (selectedServiceIds.Any())
+                            {
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Additional Services</span>
+                                    <span class="font-medium text-gray-900">
+                                        $@venue.AdditionalServices.Where(s => selectedServiceIds.Contains(s.Id)).Sum(s => s.Price)
+                                    </span>
+                                </div>
+                            }
+
+                            <div class="border-t border-gray-200 pt-3">
+                                <div class="flex justify-between text-lg font-semibold">
+                                    <span class="text-gray-900">Total Cost</span>
+                                    <span class="text-[#a0522d]">$@CalculateTotalCost()</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="mt-6 space-y-3">
+                            <button @onclick="NavigateToVenues"
+                                    class="w-full rounded-lg border border-gray-300 px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none">
+                                Back to Venues
+                            </button>
+
+                            @if (availabilityResult?.IsAvailable == true && selectedPackage != null)
+                            {
+                                <button @onclick="CreateBooking"
+                                        disabled="@isSubmitting"
+                                        class="w-full rounded-lg bg-[#a0522d] px-4 py-3 font-semibold text-white transition-colors hover:bg-[#8b4513] focus:ring-2 focus:ring-[#a0522d] focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50">
+                                    @if (isSubmitting)
+                                    {
+                                        <span class="flex items-center justify-center">
+                                            <svg class="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Processing...
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span>Confirm Booking</span>
+                                    }
+                                </button>
+                            }
+                            else
+                            {
+                                <button disabled
+                                        class="w-full cursor-not-allowed rounded-lg bg-gray-300 px-4 py-3 font-medium text-gray-500">
+                                    @(selectedPackage == null ? "Select a Package" : "Check Availability First")
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid VenueId { get; set; }
+    [Parameter] public Guid? PackageId { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthStateTask { get; set; }
+    private VenueDto venue;
+    private VenuePackageDto selectedPackage;
+    private CreateBookingDto bookingModel = new();
+    private string errorMessage = "";
+    private string successMessage = "";
+    private bool isLoading = true;
+    private bool isSubmitting = false;
+    private bool isCheckingAvailability = false;
+    private bool isAuthenticated = false;
+    private string userName = "";
+    private Guid userId = Guid.Empty;
+    private VenueAvailabilityDto availabilityResult;
+    private DateTime startDate = DateTime.Today.AddDays(1);
+    private double duration = 1;
+    private List<Guid> selectedServiceIds = new List<Guid>();
+    private int? modifiedCapacity;
+    private int? modifiedDurationHours;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckAuthentication();
+        await LoadVenueAndPackage();
+    }
+
+    private async Task CheckAuthentication()
+    {
+        var authState = await AuthStateTask;
+        var user = authState.User;
+        isAuthenticated = user.Identity.IsAuthenticated;
+        if (isAuthenticated)
+        {
+            userName = user.Identity.Name;
+            userId = Guid.Parse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+            bookingModel.UserId = userId;
+        }
+    }
+
+    private async Task LoadVenueAndPackage()
+    {
+        isLoading = true;
+        try
+        {
+            var venueResult = await VenueService.GetVenueByIdAsync(VenueId);
+            if (!venueResult.IsSuccess)
+            {
+                errorMessage = "Venue not found";
+                venue = null;
+                isLoading = false;
+                return;
+            }
+            venue = venueResult.Data;
+            bookingModel.VenueId = VenueId;
+
+            if (PackageId.HasValue)
+            {
+                var packageResult = await VenuePackageService.GetPackageByIdAsync(PackageId.Value);
+                if (packageResult.IsSuccess)
+                {
+                    selectedPackage = packageResult.Data;
+                    bookingModel.PackageId = PackageId;
+                    modifiedCapacity = selectedPackage.BaseCapacity;
+                    modifiedDurationHours = selectedPackage.BaseDurationHours;
+                }
+                else
+                {
+                    errorMessage = packageResult.Error;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ToggleService(Guid serviceId, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!selectedServiceIds.Contains(serviceId))
+                selectedServiceIds.Add(serviceId);
+        }
+        else
+        {
+            selectedServiceIds.Remove(serviceId);
+        }
+        bookingModel.SelectedAdditionalServiceIds = selectedServiceIds;
+        StateHasChanged();
+    }
+
+    private async Task CheckAvailability()
+    {
+        if (venue == null || selectedPackage == null) return;
+        isCheckingAvailability = true;
+        errorMessage = "";
+        try
+        {
+            var startDateTime = startDate;
+            var result = await BookingService.CheckVenueAvailabilityAsync(VenueId, startDateTime, duration);
+            if (result.IsSuccess)
+            {
+                availabilityResult = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isCheckingAvailability = false;
+        }
+    }
+
+    private async Task CreateBooking()
+    {
+        if (venue == null || selectedPackage == null || availabilityResult?.IsAvailable != true) return;
+        isSubmitting = true;
+        errorMessage = "";
+        try
+        {
+            bookingModel.StartTime = startDate;
+            bookingModel.Duration = duration;
+            bookingModel.SelectedAdditionalServiceIds = selectedServiceIds;
+            bookingModel.ModifiedCapacity = modifiedCapacity;
+            bookingModel.ModifiedDurationHours = modifiedDurationHours;
+            var result = await BookingService.CreateBookingAsync(bookingModel);
+            if (result.IsSuccess)
+            {
+                successMessage = "Booking created successfully!";
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/bookings");
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    private decimal CalculateTotalCost()
+    {
+        if (venue == null || selectedPackage == null) return 0;
+
+        decimal basePackageCost = selectedPackage.BasePrice;
+        decimal capacityExtensionCost = 0;
+        decimal durationExtensionCost = 0;
+
+        if (modifiedCapacity.HasValue && modifiedCapacity > selectedPackage.BaseCapacity)
+        {
+            capacityExtensionCost = (modifiedCapacity.Value - selectedPackage.BaseCapacity) * selectedPackage.PricePerAdditionalPerson;
+        }
+
+        if (modifiedDurationHours.HasValue && modifiedDurationHours > selectedPackage.BaseDurationHours)
+        {
+            durationExtensionCost = (modifiedDurationHours.Value - selectedPackage.BaseDurationHours) * selectedPackage.PricePerAdditionalHour;
+        }
+
+        var serviceCost = venue.AdditionalServices
+            .Where(s => selectedServiceIds.Contains(s.Id))
+            .Sum(s => s.Price);
+
+        return basePackageCost + capacityExtensionCost + durationExtensionCost + (decimal)serviceCost;
+    }
+
+    private string GetStatusColor(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "available" => "bg-green-100 text-green-800",
+            "maintenance" => "bg-red-100 text-red-800",
+            "booked" => "bg-yellow-100 text-yellow-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetAvailabilityBorderColor()
+    {
+        if (isCheckingAvailability) return "border-blue-200 bg-blue-50";
+        if (availabilityResult?.IsAvailable == true) return "border-green-200 bg-green-50";
+        if (availabilityResult?.IsAvailable == false) return "border-red-200 bg-red-50";
+        return "border-gray-200 bg-gray-50";
+    }
+
+    private string ResolveImageUrl(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl)) return "/Images/placeholder.jpg";
+        if (imageUrl.StartsWith("http")) return imageUrl;
+        return $"/api/venues/images/{System.IO.Path.GetFileName(imageUrl)}";
+    }
+
+    private void NavigateToVenues()
+    {
+        Navigation.NavigateTo("/Menu");
+    }
+
+    private void ChangePackage()
+    {
+        Navigation.NavigateTo($"/venues/packages/{VenueId}");
+    }
+}

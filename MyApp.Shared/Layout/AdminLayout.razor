@@ -1,0 +1,44 @@
+﻿@using MyApp.Shared.Components
+
+@inherits LayoutComponentBase
+
+@code {
+    private bool isSidebarOpen = false;
+    private void ToggleSidebar() => isSidebarOpen = !isSidebarOpen;
+}
+
+<div class="flex min-h-screen bg-[#f2f4f3] font-sans text-gray-800">
+
+    <button @onclick="ToggleSidebar"
+            class="fixed top-4 left-4 z-50 rounded-lg bg-[#3e2c24] p-2 text-[#f5e6d3] focus:outline-none md:hidden">
+        @if (isSidebarOpen)
+        {
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        }
+        else
+        {
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        }
+    </button>
+
+    <Sidebar IsOpen="@isSidebarOpen" OnClose="@ToggleSidebar" />
+
+    <div class="flex flex-grow flex-col @(isSidebarOpen ? "ml-0" : "md:ml-64")">
+        @if (isSidebarOpen)
+        {
+            <div class="fixed inset-0 z-30 bg-black opacity-50 md:hidden" @onclick="ToggleSidebar"></div>
+        }
+
+        <main class="mt-12 flex-grow p-4 md:mt-0">
+            @Body
+        </main>
+
+        <footer class="bg-[#3e2c24] py-4 text-center text-[#f5e6d3]">
+            <p>&copy; 2025 Venue Booking</p>
+        </footer>
+    </div>
+</div>

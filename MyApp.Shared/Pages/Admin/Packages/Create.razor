@@ -1,0 +1,291 @@
+﻿@page "/admin/packages/create"
+@layout AdminLayout
+@using MyApp.Shared.Dtos.Venue
+@using System.ComponentModel.DataAnnotations
+@inject IVenueService VenueService
+@inject IVenuePackageService PackageService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="mb-8 text-center">
+            <h1 class="animate-fade-in text-3xl font-bold text-gray-900">Create New Package</h1>
+            <p class="mt-2 text-gray-600">Add a new package to a venue</p>
+        </div>
+
+        <EditForm Model="@packageModel" OnValidSubmit="HandleValidSubmit" class="animate-slide-up rounded-lg bg-white p-6 shadow-md">
+            <DataAnnotationsValidator />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                    <p class="text-sm text-red-600">@errorMessage</p>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="animate-fade-in mb-4 rounded-md border border-green-200 bg-green-50 p-3">
+                    <p class="text-sm text-green-600">@successMessage</p>
+                </div>
+            }
+
+            <!-- Venue Selection -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Venue</label>
+                <InputSelect @bind-Value="packageModel.VenueId"
+                             class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none">
+                    <option value="">Select a venue</option>
+                    @foreach (var venue in venues)
+                    {
+                        <option value="@venue.Id">@venue.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => packageModel.VenueId)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Name -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Package Name</label>
+                <InputText @bind-Value="packageModel.Name"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => packageModel.Name)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                <InputTextArea @bind-Value="packageModel.Description"
+                               class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                               rows="3" />
+                <ValidationMessage For="@(() => packageModel.Description)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Tier -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Tier</label>
+                <InputSelect @bind-Value="packageModel.Tier"
+                             class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none">
+                    <option value="">Select tier</option>
+                    <option value="@PackageTier.Basic">Basic</option>
+                    <option value="@PackageTier.Intermediate">Intermediate</option>
+                    <option value="@PackageTier.Advance">Advance</option>
+                    <option value="@PackageTier.Custom">Custom</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => packageModel.Tier)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Base Capacity and Duration -->
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Base Capacity</label>
+                    <InputNumber @bind-Value="packageModel.BaseCapacity"
+                                 TValue="int"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.BaseCapacity)" class="text-sm text-red-600 mt-1" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Base Duration (hours)</label>
+                    <InputNumber @bind-Value="packageModel.BaseDurationHours"
+                                 TValue="int"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.BaseDurationHours)" class="text-sm text-red-600 mt-1" />
+                </div>
+            </div>
+
+            <!-- Base Price and Additional Pricing -->
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Base Price</label>
+                    <InputNumber @bind-Value="packageModel.BasePrice"
+                                 TValue="decimal"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.BasePrice)" class="text-sm text-red-600 mt-1" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Price per Additional Person</label>
+                    <InputNumber @bind-Value="packageModel.PricePerAdditionalPerson"
+                                 TValue="decimal"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.PricePerAdditionalPerson)" class="text-sm text-red-600 mt-1" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Price per Additional Hour</label>
+                    <InputNumber @bind-Value="packageModel.PricePerAdditionalHour"
+                                 TValue="decimal"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.PricePerAdditionalHour)" class="text-sm text-red-600 mt-1" />
+                </div>
+            </div>
+
+            <!-- Includes -->
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="flex items-center">
+                    <InputCheckbox @bind-Value="packageModel.IncludesDecoration" />
+                    <label class="ml-2 text-sm font-medium text-gray-700">Includes Decoration</label>
+                </div>
+                <div class="flex items-center">
+                    <InputCheckbox @bind-Value="packageModel.IncludesCake" />
+                    <label class="ml-2 text-sm font-medium text-gray-700">Includes Cake</label>
+                </div>
+                <div class="flex items-center">
+                    <InputCheckbox @bind-Value="packageModel.IncludesSoundSystem" />
+                    <label class="ml-2 text-sm font-medium text-gray-700">Includes Sound System</label>
+                </div>
+            </div>
+
+            <!-- Included Services Description -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Included Services Description</label>
+                <InputTextArea @bind-Value="packageModel.IncludedServicesDescription"
+                               class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                               rows="3" />
+                <ValidationMessage For="@(() => packageModel.IncludedServicesDescription)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Package Services -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Package Services (Add one at a time)</label>
+                <div class="mb-2 flex flex-col gap-2 sm:flex-row">
+                    <InputText @bind-Value="newService.Name"
+                               class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                               placeholder="Service name" />
+                    <InputNumber @bind-Value="newService.Price"
+                                 TValue="decimal"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none sm:w-32"
+                                 placeholder="Price" />
+                    <button type="button" @onclick="AddService"
+                            disabled="@(string.IsNullOrWhiteSpace(newService.Name))"
+                            class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                        Add
+                    </button>
+                </div>
+                @if (packageModel.PackageServices.Any())
+                {
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        @foreach (var service in packageModel.PackageServices)
+                        {
+                            <div class="flex items-center rounded-full bg-[#f5e6d3] px-3 py-1 text-sm text-[#3e2c24]">
+                                @service.Name ($@service.Price)
+                                <button type="button" @onclick="() => RemoveService(service)" class="ml-2 text-[#a0522d] hover:text-[#3e2c24]">
+                                    &times;
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end gap-3">
+                <button type="button" @onclick="Cancel" disabled="@isSubmitting"
+                        class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                    Cancel
+                </button>
+                <button type="submit" disabled="@isSubmitting"
+                        class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                    @if (isSubmitting)
+                    {
+                        <span>Creating...</span>
+                    }
+                    else
+                    {
+                        <span>Create Package</span>
+                    }
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private CreateVenuePackageDto packageModel = new();
+    private List<VenueDto> venues = new();
+    private CreatePackageServiceDto newService = new();
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenues();
+    }
+
+    private async Task LoadVenues()
+    {
+        try
+        {
+            var result = await VenueService.GetAllVenuesAsync();
+            if (result.IsSuccess)
+            {
+                venues = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venues: {ex.Message}";
+        }
+        StateHasChanged();
+    }
+
+    private void AddService()
+    {
+        if (!string.IsNullOrWhiteSpace(newService.Name))
+        {
+            packageModel.PackageServices.Add(new CreatePackageServiceDto
+            {
+                Name = newService.Name,
+                Description = newService.Description,
+                Price = newService.Price,
+                IsIncludedInPackage = true,
+                IsAvailableForCustomization = true
+            });
+            newService = new CreatePackageServiceDto();
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveService(CreatePackageServiceDto service)
+    {
+        packageModel.PackageServices.Remove(service);
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+        try
+        {
+            var result = await PackageService.CreatePackageAsync(packageModel);
+            if (result.IsSuccess)
+            {
+                successMessage = "Package created successfully!";
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/admin/packages");
+            }
+            else
+            {
+                errorMessage = result.Error ?? "Failed to create package";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Cancel()
+    {
+        Navigation.NavigateTo("/admin/packages");
+    }
+}

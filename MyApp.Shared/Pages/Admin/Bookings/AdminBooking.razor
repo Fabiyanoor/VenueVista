@@ -1,0 +1,284 @@
+﻿@page "/list/bookings"
+@using MyApp.Shared.Dtos.Booking
+@layout AdminLayout
+@inject IBookingService BookingService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="animate-fade-in mb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Bookings</h1>
+        </div>
+
+        <div class="animate-fade-in mb-6 flex flex-col gap-4 rounded-lg bg-white p-4 shadow-md md:flex-row md:items-center md:justify-start md:gap-6">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <label for="startDate" class="text-sm font-medium text-gray-700">Start Date:</label>
+                <input id="startDate" type="date" @bind="startDate" class="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#a0522d] focus:outline-none sm:w-auto" />
+            </div>
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <label for="endDate" class="text-sm font-medium text-gray-700">End Date:</label>
+                <input id="endDate" type="date" @bind="endDate" class="w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#a0522d] focus:outline-none sm:w-auto" />
+            </div>
+
+            <div class="mt-2 flex w-full gap-3 sm:mt-0 md:w-auto">
+                <button @onclick="LoadBookings" class="w-1/2 rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none md:w-auto">
+                    Filter
+                </button>
+                <button @onclick="ClearFilter" class="w-1/2 rounded-md bg-gray-300 px-4 py-2 text-gray-800 transition-colors hover:bg-gray-400 focus:ring-2 focus:ring-gray-400 focus:outline-none md:w-auto">
+                    Clear
+                </button>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                <p class="text-sm text-red-600">@errorMessage</p>
+            </div>
+        }
+
+        <div class="animate-slide-up hidden overflow-x-auto rounded-lg bg-white shadow-md sm:block">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[#f5e6d3]">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Venue</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">User</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Start Time</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">End Time</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Total Cost</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Status</th>
+                        <th scope="col" class="px-6 py-3 text-right text-sm font-semibold text-[#3e2c24]">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @if (bookings == null)
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-800">Loading...</td>
+                        </tr>
+                    }
+                    else if (!bookings.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-800">No bookings found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var booking in bookings)
+                        {
+                            <tr class="transition-colors hover:bg-gray-50">
+                                <td class="px-6 py-4 text-sm text-gray-800">@booking.VenueName</td>
+                                <td class="px-6 py-4 text-sm text-gray-800">
+                                    <span class="font-medium">@booking.UserFullName</span>
+                                    <span class="block text-xs text-gray-500">@booking.UserEmail</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-800">@booking.StartTime.ToString("g")</td>
+                                <td class="px-6 py-4 text-sm text-gray-800">@booking.EndTime.ToString("g")</td>
+                                <td class="px-6 py-4 text-sm font-semibold text-gray-800">$@booking.TotalCost.ToString("F2")</td>
+                                <td class="px-6 py-4 text-sm">@GetStatusBadge(booking.Status)</td>
+                                <td class="px-6 py-4 text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-3">
+                                        <button @onclick="() => NavigateToViewBooking(booking.Id)" class="text-[#a0522d] hover:text-[#3e2c24]" title="View">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
+                                        @if (booking.Status != "Canceled")
+                                        {
+                                            <button @onclick="() => CancelBooking(booking.Id)" class="text-red-600 hover:text-red-800" title="Cancel">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="animate-slide-up space-y-4 sm:hidden">
+            @if (bookings == null)
+            {
+                <div class="rounded-lg bg-white p-4 text-center text-sm text-gray-800 shadow-md">Loading...</div>
+            }
+            else if (!bookings.Any())
+            {
+                <div class="rounded-lg bg-white p-4 text-center text-sm text-gray-800 shadow-md">No bookings found.</div>
+            }
+            else
+            {
+                @foreach (var booking in bookings)
+                {
+                    <div class="rounded-lg border-l-4 border-[#a0522d] bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
+                        <div class="flex items-start justify-between">
+                            <div class="min-w-0 flex-1">
+                                <p class="truncate text-lg font-bold text-gray-900">@booking.VenueName</p>
+                                <p class="text-sm font-medium text-gray-700">@booking.UserFullName</p>
+                                <p class="truncate text-xs text-gray-500">@booking.UserEmail</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                @GetStatusBadge(booking.Status)
+                            </div>
+                        </div>
+
+                        <div class="mt-3 grid grid-cols-2 gap-y-2 text-sm">
+                            <div class="font-medium text-gray-500">Start:</div>
+                            <div class="text-right text-gray-900">@booking.StartTime.ToString("MMM dd, yyyy h:mm tt")</div>
+                            <div class="font-medium text-gray-500">End:</div>
+                            <div class="text-right text-gray-900">@booking.EndTime.ToString("MMM dd, yyyy h:mm tt")</div>
+                            <div class="font-medium text-gray-500">Cost:</div>
+                            <div class="text-right text-lg font-bold text-[#a0522d]">$@booking.TotalCost.ToString("F2")</div>
+                        </div>
+
+                        <div class="mt-4 flex justify-end gap-3 border-t border-gray-100 pt-3">
+                            <button @onclick="() => NavigateToViewBooking(booking.Id)" class="flex items-center text-[#a0522d] hover:text-[#3e2c24] text-sm font-medium" title="View">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                View
+                            </button>
+                            @if (booking.Status != "Canceled")
+                            {
+                                <button @onclick="() => CancelBooking(booking.Id)" class="flex items-center text-red-600 hover:text-red-800 text-sm font-medium" title="Cancel">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    Cancel
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ... (Your existing styles remain unchanged) ... */
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+@code {
+    private List<BookingWithUserDto> bookings = null;
+    private string errorMessage = string.Empty;
+    private DateTime? startDate;
+    private DateTime? endDate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBookings();
+    }
+
+    private async Task LoadBookings()
+    {
+        try
+        {
+            MethodResult<List<BookingWithUserDto>> result;
+            if (startDate.HasValue && endDate.HasValue && startDate.Value < endDate.Value)
+            {
+                result = await BookingService.GetBookingsWithUserInfoByDateRangeAsync(startDate.Value, endDate.Value);
+            }
+            else
+            {
+                result = await BookingService.GetAllBookingsWithUserInfoAsync();
+            }
+
+            if (result.IsSuccess)
+            {
+                bookings = result.Data.OrderByDescending(b => b.StartTime).ToList(); // Added sorting for better view
+            }
+            else
+            {
+                errorMessage = result.Error;
+                bookings = new List<BookingWithUserDto>();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load bookings: {ex.Message}";
+            bookings = new List<BookingWithUserDto>();
+        }
+        StateHasChanged();
+    }
+
+    private void ClearFilter()
+    {
+        startDate = null;
+        endDate = null;
+        LoadBookings();
+    }
+
+    private void NavigateToViewBooking(Guid bookingId)
+    {
+        NavigationManager.NavigateTo($"/bookings/{bookingId}");
+    }
+
+    private MarkupString GetStatusBadge(string status)
+    {
+        string colorClass = status switch
+        {
+            "Confirmed" => "bg-green-100 text-green-800",
+            "Pending" => "bg-yellow-100 text-yellow-800",
+            "Canceled" => "bg-red-100 text-red-800",
+            _ => "bg-gray-100 text-gray-800"
+        };
+        string html = $"<span class='{colorClass} inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium'>{status}</span>";
+        return new MarkupString(html);
+    }
+
+    private async Task CancelBooking(Guid bookingId)
+    {
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to cancel this booking?");
+        if (!confirm) return;
+
+        try
+        {
+            var result = await BookingService.CancelBookingAsync(bookingId);
+            if (result.IsSuccess)
+            {
+                await LoadBookings();
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to cancel booking: {ex.Message}";
+        }
+        StateHasChanged();
+    }
+}

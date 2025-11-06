@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MyApp</name>
+    </assembly>
+    <members>
+        <member name="T:MyApp.Resource">
+            <summary>
+            Android Resource Designer class.
+            Exposes the Android Resource designer assembly into the project Namespace.
+            </summary>
+        </member>
+        <member name="T:Refit.Implementation.Generated">
+            <inheritdoc />
+        </member>
+        <member name="T:Refit.Implementation.Generated.IAdditionalServiceApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Refit.Implementation.Generated.IAdditionalServiceApi.Client">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.#ctor(System.Net.Http.HttpClient,Refit.IRequestBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.CreateAsync(MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.UpdateAsync(System.Guid,MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.DeleteAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.GetByIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.GetByVenueIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.GetAllAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.IAdditionalServiceApi#CreateAsync(MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.IAdditionalServiceApi#UpdateAsync(System.Guid,MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.IAdditionalServiceApi#DeleteAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.IAdditionalServiceApi#GetByIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.IAdditionalServiceApi#GetByVenueIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAdditionalServiceApi.IAdditionalServiceApi#GetAllAsync">
+            <inheritdoc />
+        </member>
+        <member name="T:Refit.Implementation.Generated.IAuthApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Refit.Implementation.Generated.IAuthApi.Client">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAuthApi.#ctor(System.Net.Http.HttpClient,Refit.IRequestBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAuthApi.RegisterAsync(MyApp.Shared.Dtos.User.RegisterModel)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAuthApi.LoginAsync(MyApp.Shared.Dtos.User.LoginModel)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAuthApi.IAuthApi#RegisterAsync(MyApp.Shared.Dtos.User.RegisterModel)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IAuthApi.IAuthApi#LoginAsync(MyApp.Shared.Dtos.User.LoginModel)">
+            <inheritdoc />
+        </member>
+        <member name="T:Refit.Implementation.Generated.IBookingApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Refit.Implementation.Generated.IBookingApi.Client">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.#ctor(System.Net.Http.HttpClient,Refit.IRequestBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.CreateBookingAsync(MyApp.Shared.Dtos.Booking.CreateBookingDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.GetBookingByIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.GetBookingsByVenueAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.CancelBookingAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.CheckVenueAvailabilityAsync(System.Guid,System.DateTime,System.Double)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.GetAllBookingsWithUserInfoAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.GetBookingsWithUserInfoByDateRangeAsync(System.DateTime,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.GetBookingsByUserIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.GetBookingsByUserIdAndDateRangeAsync(System.Guid,System.DateTime,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#CreateBookingAsync(MyApp.Shared.Dtos.Booking.CreateBookingDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#GetBookingByIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#GetBookingsByVenueAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#CancelBookingAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#CheckVenueAvailabilityAsync(System.Guid,System.DateTime,System.Double)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#GetAllBookingsWithUserInfoAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#GetBookingsWithUserInfoByDateRangeAsync(System.DateTime,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#GetBookingsByUserIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IBookingApi.IBookingApi#GetBookingsByUserIdAndDateRangeAsync(System.Guid,System.DateTime,System.DateTime)">
+            <inheritdoc />
+        </member>
+        <member name="T:Refit.Implementation.Generated.IUserApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Refit.Implementation.Generated.IUserApi.Client">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.#ctor(System.Net.Http.HttpClient,Refit.IRequestBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.GetAllUsersAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.GetUserDetailsAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.UpdateUserAsync(System.Guid,MyApp.Shared.Dtos.User.UpdateUserDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.IUserApi#GetAllUsersAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.IUserApi#GetUserDetailsAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IUserApi.IUserApi#UpdateUserAsync(System.Guid,MyApp.Shared.Dtos.User.UpdateUserDto)">
+            <inheritdoc />
+        </member>
+        <member name="T:Refit.Implementation.Generated.IVenueApi">
+            <inheritdoc />
+        </member>
+        <member name="P:Refit.Implementation.Generated.IVenueApi.Client">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.#ctor(System.Net.Http.HttpClient,Refit.IRequestBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.CreateVenueAsync(MyApp.Shared.Dtos.CreateVenueDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.UpdateVenueAsync(System.Guid,MyApp.Shared.Dtos.CreateVenueDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.DeleteVenueAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.GetVenueByIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.GetAllVenuesAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.UploadVenueImagesAsync(System.Collections.Generic.List{Refit.ByteArrayPart},System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.IVenueApi#CreateVenueAsync(MyApp.Shared.Dtos.CreateVenueDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.IVenueApi#UpdateVenueAsync(System.Guid,MyApp.Shared.Dtos.CreateVenueDto)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.IVenueApi#DeleteVenueAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.IVenueApi#GetVenueByIdAsync(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.IVenueApi#GetAllVenuesAsync">
+            <inheritdoc />
+        </member>
+        <member name="M:Refit.Implementation.Generated.IVenueApi.IVenueApi#UploadVenueImagesAsync(System.Collections.Generic.List{Refit.ByteArrayPart},System.String)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,170 @@
+﻿@page "/users/{Id:guid}/edit"
+@layout AdminLayout
+@using MyApp.Shared.Dtos.User
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="animate-fade-in mb-8 flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-900">Edit User</h1>
+            <div class="flex gap-3">
+                <button @onclick="NavigateToDetails" class="rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                    View User
+                </button>
+                <button @onclick="NavigateBack" class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                    Back to Users
+                </button>
+            </div>
+        </div>
+        <!-- Error and Success Messages -->
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                <p class="text-sm text-red-600">@errorMessage</p>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(successMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-green-200 bg-green-50 p-3">
+                <p class="text-sm text-green-600">@successMessage</p>
+            </div>
+        }
+        <!-- Edit Form -->
+        @if (user == null)
+        {
+            <div class="text-center text-gray-800">
+                <svg class="mx-auto h-8 w-8 animate-spin text-[#3e2c24]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+        }
+        else
+        {
+            <div class="animate-slide-up rounded-lg bg-white p-6 shadow-md">
+                <h2 class="mb-6 text-2xl font-semibold text-[#3e2c24]">Update User</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        <input id="name" type="text" @bind="updateModel.Name" class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input id="email" type="email" @bind="updateModel.Email" class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    </div>
+                    <div>
+                        <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number</label>
+                        <input id="contactNumber" type="tel" @bind="updateModel.ContactNumber" class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    </div>
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                        <select id="role" @bind="updateModel.Role" class="mt-1 w-full rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#a0522d] focus:outline-none">
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end gap-3">
+                        <button @onclick="NavigateBack" class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                            Cancel
+                        </button>
+                        <button @onclick="UpdateUser" disabled="@isSubmitting" class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                            @if (isSubmitting)
+                            {
+                                <span>Saving...</span>
+                            }
+                            else
+                            {
+                                <span>Save Changes</span>
+                            }
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    private UserDetailsDto user;
+    private UpdateUserDto updateModel = new();
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isSubmitting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUser();
+    }
+
+    private async Task LoadUser()
+    {
+        try
+        {
+            var result = await UserService.GetUserDetailsAsync(Id);
+            if (result.IsSuccess)
+            {
+                user = result.Data;
+                updateModel.Name = user.Name;
+                updateModel.Email = user.Email;
+                updateModel.ContactNumber = user.ContactNumber;
+                updateModel.Role = user.Role;
+            }
+            else
+            {
+                errorMessage = result.Error;
+                user = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load user: {ex.Message}";
+            user = null;
+        }
+        StateHasChanged();
+    }
+
+    private async Task UpdateUser()
+    {
+        isSubmitting = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+        try
+        {
+            var result = await UserService.UpdateUserAsync(Id, updateModel);
+            if (result.IsSuccess)
+            {
+                successMessage = "User updated successfully!";
+                await LoadUser(); // Refresh user data
+                NavigationManager.NavigateTo($"/users/{Id}");
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to update user: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private void NavigateToDetails()
+    {
+        NavigationManager.NavigateTo($"/users/{Id}");
+    }
+
+    private void NavigateBack()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+}

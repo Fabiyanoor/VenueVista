@@ -1,0 +1,114 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<!-- Navbar -->
+<nav class="border-b border-[#f5e6d3] bg-[#f2f4f3]">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+            <!-- Left: Logo -->
+            <div class="flex items-center space-x-2">
+                <a href="/" class="flex items-center space-x-2">
+                    <img src="_content/MyApp.Shared/images/logo.png" alt="VenueVista Logo" class="h-32 w-auto" />
+                </a>
+            </div>
+            <!-- Desktop Menu -->
+            <div class="hidden items-center space-x-6 md:flex">
+                <a href="/" class="text-gray-800 transition hover:text-[#a7522d]">Home</a>
+                <a href="/about" class="text-gray-800 transition hover:text-[#a0522d]">About</a>
+                <a href="/services" class="text-gray-800 transition hover:text-[#a0522d]">Services</a>
+                <a href="/contact" class="text-gray-800 transition hover:text-[#a0522d]">Contact</a>
+                @if (_isLoggedIn)
+                {
+                    <a href="/user/profile" class="text-gray-800 transition hover:text-[#a0522d]">User Panel</a>
+                    <button @onclick="LogoutAsync" class="rounded-lg bg-[#a0522d] px-4 py-2 text-white transition hover:bg-[#d2a679]">
+                        Logout
+                    </button>
+                }
+                else
+                {
+                    <a href="/auth/login" class="rounded-lg bg-[#a0522d] px-4 py-2 text-white transition hover:bg-[#d2a679]">
+                        Login
+                    </a>
+                }
+            </div>
+            <!-- Mobile Menu Button -->
+            <div class="flex items-center md:hidden">
+                <button @onclick="Toggle" aria-label="Open menu" class="text-gray-800 hover:text-[#a0522d]">
+                    ☰
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="@((isOpen ? "block" : "hidden")) md:hidden">
+            <div class="space-y-2 bg-[#a47963] px-2 pb-4">
+                <a href="/" class="block rounded px-3 py-2 text-gray-800 hover:bg-[#f5e6d3] hover:text-[#a0522d]">Home</a>
+                <a href="/about" class="block rounded px-3 py-2 text-gray-800 hover:bg-[#f5e6d3] hover:text-[#a0522d]">About</a>
+                <a href="/services" class="block rounded px-3 py-2 text-gray-800 hover:bg-[#f5e6d3] hover:text-[#a0522d]">Services</a>
+                <a href="/contact" class="block rounded px-3 py-2 text-gray-800 hover:bg-[#f5e6d3] hover:text-[#a0522d]">Contact</a>
+                @if (_isLoggedIn)
+                {
+                    <a href="/user/profile" class="block rounded px-3 py-2 text-gray-800 hover:bg-[#f5e6d3] hover:text-[#a0522d]">User Panel</a>
+                    <button @onclick="LogoutAsync" class="rounded-lg bg-[#a0522d] px-4 py-2 text-white transition hover:bg-[#d2a679]">
+                        Logout
+                    </button>
+                }
+                else
+                {
+                    <a href="/auth/login" class="block rounded bg-[#a0522d] px-3 py-2 text-white hover:bg-[#d2a679]">Login</a>
+                }
+            </div>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private bool isOpen = false;
+    private bool _isLoggedIn = false;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateLoginState();
+
+        // Subscribe to authentication state changes
+        if (AuthenticationStateProvider is AuthenticationStateProvider authProvider)
+        {
+            authProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
+        }
+    }
+
+    private async void OnAuthenticationStateChanged(Task<AuthenticationState> task)
+    {
+        await UpdateLoginState();
+        StateHasChanged(); // Force UI refresh
+    }
+
+    private async Task UpdateLoginState()
+    {
+        var authState = await AuthStateTask;
+        _isLoggedIn = authState.User.Identity?.IsAuthenticated ?? false;
+    }
+
+    private void Toggle() => isOpen = !isOpen;
+
+    private async void LogoutAsync()
+    {
+        // Navigate to logout and force refresh
+        Navigation.NavigateTo("/auth/logout", forceLoad: true);
+
+        // Immediately update UI state
+        _isLoggedIn = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Unsubscribe from events
+        if (AuthenticationStateProvider is AuthenticationStateProvider authProvider)
+        {
+            authProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
+        }
+    }
+}

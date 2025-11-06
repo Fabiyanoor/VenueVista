@@ -1,0 +1,92 @@
+﻿@page "/auth/login"
+@using MyApp.Shared.Dtos.User
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<div class="flex min-h-screen items-center justify-center bg-[#f2f4f3]">
+    <div class="w-full max-w-md rounded-2xl border border-gray-200 bg-[#f5e6d3] p-8 shadow-lg">
+        <!-- Logo / Title -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-[#5c3d2e]">Hall Booking</h1>
+            <p class="text-gray-700">Login to continue</p>
+        </div>
+
+        <!-- Login Form -->
+        <EditForm Model="@LoginModel" OnValidSubmit="@HandleValidSubmit" FormName="login-form">
+            <DataAnnotationsValidator />
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <p class="mb-2 text-sm text-red-500">@errorMessage</p>
+            }
+
+            <!-- Email -->
+            <div class="mb-4">
+                <label class="mb-1 block font-medium text-[#5c3d2e]">Email</label>
+                <InputText @bind-Value="LoginModel.Email"
+                           type="email"
+                           placeholder="you@example.com"
+                           class="w-full rounded-lg border border-[#a0522d] px-4 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => LoginModel.Email)" class="text-red-500 text-sm" />
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="mb-1 block font-medium text-[#5c3d2e]">Password</label>
+                <InputText @bind-Value="LoginModel.Password"
+                           type="password"
+                           placeholder="••••••••"
+                           class="w-full rounded-lg border border-[#a0522d] px-4 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit"
+                    class="w-full rounded-lg bg-[#a0522d] px-4 py-2 font-semibold text-white shadow-md transition duration-300 hover:bg-[#d2a679]">
+                Login
+            </button>
+        </EditForm>
+
+        <!-- Sign Up -->
+        <p class="mt-6 text-center text-sm text-gray-700">
+            Don’t have an account?
+            <a href="/register" class="font-semibold text-[#a0522d] hover:underline">Sign up</a>
+        </p>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm(FormName = "login-form")]
+    private LoginModel LoginModel { get; set; } = new();
+    private string? errorMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var result = await AuthService.LoginAsync(LoginModel);
+
+        if (!result.IsSuccess)
+        {
+            errorMessage = result.Error;
+            return;
+        }
+
+        var loggedInUser = result.Data;
+
+        var platformLoginResult = await AuthService.PlatformLoginAsync(loggedInUser);
+        if (!platformLoginResult.IsSuccess)
+        {
+            errorMessage = platformLoginResult.Error;
+            return;
+        }
+
+        if (loggedInUser.IsAdmin)
+        {
+            Navigation.NavigateTo("/stats", forceLoad: true);
+        }
+        else
+        {
+            Navigation.NavigateTo("/", forceLoad: true); 
+        }
+    }
+
+}

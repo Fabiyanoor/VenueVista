@@ -1,0 +1,220 @@
+﻿@page "/venues/details/{Id:guid}"
+@using MyApp.Shared.Dtos.Venue
+@inject IVenueService VenueService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+<PageTitle>Venue Details</PageTitle>
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 font-sans text-[#3e2c24]">
+    <section class="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+        <div class="mb-8 flex flex-col items-start justify-between sm:flex-row sm:items-center">
+            <h1 class="text-3xl font-extrabold tracking-tight text-[#3e2c24] sm:text-4xl">Explore @venue?.Name</h1>
+            <div class="mt-4 flex gap-3 sm:mt-0">
+                <button @onclick="NavigateToPackages" class="rounded-lg bg-[#a0522d] px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 focus:outline-none">
+                    Book Now
+                </button>
+                <button @onclick="NavigateBack" class="rounded-lg bg-gray-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 focus:outline-none">
+                    Back to Venues
+                </button>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="mb-6 rounded-xl border border-red-300 bg-red-100 p-4 shadow-sm">
+                <p class="text-sm font-medium text-red-800">@errorMessage</p>
+            </div>
+        }
+        @if (venue == null)
+        {
+            <div class="flex h-64 items-center justify-center">
+                <svg class="h-8 w-8 animate-spin text-[#3e2c24]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+                <div class="lg:col-span-3">
+                    @if (venue.ImageUrls != null && venue.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                    {
+                        <div class="relative h-64 w-74 overflow-hidden rounded-2xl shadow-lg">
+                            @if (!imageLoaded.ContainsKey(selectedImageUrl) || !imageLoaded[selectedImageUrl])
+                            {
+                                <div class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                                    <svg class="h-8 w-8 animate-spin text-[#a0522d]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </div>
+                            }
+                            <img src="@ResolveImageUrl(selectedImageUrl)" alt="@venue.Name" class="h-full w-full object-contain transition-transform duration-300 hover:scale-105" @onload="() => ImageLoaded(selectedImageUrl)" @onerror="() => HandleImageError(selectedImageUrl)" />
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex h-64 w-full items-center justify-center rounded-2xl bg-gray-200 shadow-lg">
+                            <span class="text-sm font-medium text-gray-500">No Image Available</span>
+                        </div>
+                    }
+                    @if (venue.ImageUrls != null && venue.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                    {
+                        <div class="mt-6">
+                            <h3 class="mb-3 text-sm font-semibold tracking-wide text-gray-600 uppercase">Gallery</h3>
+                            <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                                @foreach (var imageUrl in venue.ImageUrls.Where(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                                {
+                                    <div class="relative cursor-pointer overflow-hidden rounded-lg shadow-md" @onclick="() => OnImageClick(imageUrl)">
+                                        @if (!imageLoaded.ContainsKey(imageUrl) || !imageLoaded[imageUrl])
+                                        {
+                                            <div class="absolute inset-0 flex items-center justify-center bg-gray-200">
+                                                <svg class="h-6 w-6 animate-spin text-[#a0522d]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </div>
+                                        }
+                                        <img src="@ResolveImageUrl(imageUrl)" alt="Venue Image" class="h-40 w-full object-cover transition-transform duration-300 hover:scale-105 @(selectedImageUrl == imageUrl ? "ring-2 ring-indigo-600" : "")" @onload="() => ImageLoaded(imageUrl)" @onerror="() => HandleImageError(imageUrl)" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="rounded-2xl bg-white p-8 shadow-lg lg:col-span-2">
+                    <h2 class="mb-6 text-2xl font-bold text-[#a0522d]">@venue.Name</h2>
+                    <div class="mb-6">
+                        <h3 class="text-xs font-semibold tracking-wide text-[#a0522d] uppercase">Type</h3>
+                        <p class="text-lg text-gray-700">@venue.Type</p>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-xs font-semibold tracking-wide text-[#a0522d] uppercase">Address</h3>
+                        <p class="text-lg text-gray-700">@venue.Address</p>
+                    </div>
+                    <div class="mb-6 grid grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xs font-semibold tracking-wide text-[#a0522d] uppercase">Status</h3>
+                            <p class="text-lg text-gray-700">@venue.Status</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-semibold tracking-wide text-[#a0522d] uppercase">Rating</h3>
+                            <p class="text-lg text-gray-700">@(venue.Rating.ToString("F1"))</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="mb-3 text-xs font-semibold tracking-wide text-[#a0522d] uppercase">Additional Services</h3>
+                        @if (venue.AdditionalServices.Any())
+                        {
+                            <div class="grid grid-cols-1 gap-2">
+                                @foreach (var service in venue.AdditionalServices)
+                                {
+                                    <div class="text-sm text-gray-700">
+                                        @service.Name (@(service.Description ?? "No description")) - $@service.Price
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-lg text-gray-700">No additional services available</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </section>
+</div>
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+    private VenueDto venue;
+    private string errorMessage = string.Empty;
+    private Dictionary<string, bool> imageLoaded = new();
+    private string selectedImageUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenue();
+    }
+
+    private async Task LoadVenue()
+    {
+        try
+        {
+            var result = await VenueService.GetVenueByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                venue = result.Data;
+                if (venue.ImageUrls != null)
+                {
+                    foreach (var imageUrl in venue.ImageUrls.Where(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                    {
+                        imageLoaded[imageUrl] = false;
+                    }
+                    selectedImageUrl = venue.ImageUrls.FirstOrDefault(url => !string.IsNullOrWhiteSpace(url) && url != "string");
+                }
+            }
+            else
+            {
+                errorMessage = result.Error;
+                venue = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venue: {ex.Message}";
+            venue = null;
+        }
+        StateHasChanged();
+    }
+
+    private string ResolveImageUrl(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl) || imageUrl == "string")
+            return "/Images/placeholder.jpg";
+        if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+            return imageUrl;
+        var baseUri = Navigation.BaseUri;
+        return new Uri(new Uri(baseUri), $"api/venues/images/{Path.GetFileName(imageUrl)}").ToString();
+    }
+
+    private void ImageLoaded(string imageUrl)
+    {
+        imageLoaded[imageUrl] = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleImageError(string imageUrl)
+    {
+        var resolvedUrl = ResolveImageUrl(imageUrl);
+        await JSRuntime.InvokeVoidAsync("console.log", $"Image failed to load: {imageUrl} (Resolved: {resolvedUrl})");
+        if (venue != null && venue.ImageUrls != null && venue.ImageUrls.Any())
+        {
+            venue.ImageUrls.Remove(imageUrl);
+            imageLoaded.Remove(imageUrl);
+            if (selectedImageUrl == imageUrl)
+            {
+                selectedImageUrl = venue.ImageUrls.FirstOrDefault(url => !string.IsNullOrWhiteSpace(url) && url != "string");
+            }
+            errorMessage = $"Failed to load image for {venue.Name}. It has been removed. Check if the file exists at {resolvedUrl}.";
+            StateHasChanged();
+        }
+    }
+
+    private void OnImageClick(string imageUrl)
+    {
+        selectedImageUrl = imageUrl;
+        StateHasChanged();
+    }
+
+    private void NavigateBack()
+    {
+        Navigation.NavigateTo("/Menu");
+    }
+
+    private void NavigateToPackages()
+    {
+        Navigation.NavigateTo($"/venues/{Id}/packages");
+    }
+}

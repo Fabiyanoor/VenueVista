@@ -1,0 +1,213 @@
+﻿@page "/"
+@using MyApp.Shared.Services
+@inject IFormFactor FormFactor
+@inject NavigationManager Navigation
+@attribute [Authorize]
+<PageTitle>Home</PageTitle>
+<div class="min-h-screen bg-[#f2f4f3] font-sans text-gray-800">
+    <!-- Hero Section -->
+    <section class="relative mx-8 my-12 flex min-h-[500px] items-center justify-center overflow-hidden rounded-2xl border-8 border-white/10 shadow-md"
+             style="background-image: url('_content/MyApp.Shared/images/hero2.jpg'); background-size: cover; background-position: center;">
+        <div class="mx-auto max-w-4xl rounded-2xl border-2 border-[#a0522d] bg-[#f2f4f3]/50 px-6 py-8 text-center">
+            <h1 class="mb-4 text-center text-4xl font-bold text-white md:text-5xl">Find the Perfect Venue</h1>
+            <p class="mb-6 text-center text-lg text-gray-800">
+                Book halls and venues for weddings, parties, farewells, and official events – all in one place.
+            </p>
+            <!-- In your Home page razor component -->
+            <NavLink href="/Menu" class="inline-block rounded-lg bg-[#a0522d] px-6 py-3 text-center text-white shadow-md hover:bg-[#d2a679]">
+                Browse Venues
+            </NavLink>
+        </div>
+    </section>
+    <!-- Stats -->
+    <section class="grid grid-cols-2 gap-6 bg-[#3e2c24] py-12 text-center text-white md:grid-cols-4">
+        <div>
+            <h3 class="text-2xl font-bold text-white">500+</h3>
+            <p class="text-[#f5e6d3]">Venues Listed</p>
+        </div>
+        <div>
+            <h3 class="text-2xl font-bold text-white">10k+</h3>
+            <p class="text-[#f5e6d3]">Successful Bookings</p>
+        </div>
+        <div>
+            <h3 class="text-2xl font-bold text-white">15+</h3>
+            <p class="text-[#f5e6d3]">Cities Covered</p>
+        </div>
+        <div>
+            <h3 class="text-2xl font-bold text-white">95%</h3>
+            <p class="text-[#f5e6d3]">Happy Clients</p>
+        </div>
+    </section>
+    <!-- Services Cards -->
+    <section class="py-12">
+        <div class="mx-auto mt-2 mb-12 grid max-w-6xl grid-cols-1 items-start gap-6 px-6 md:grid-cols-2">
+            <h2 class="text-2xl font-bold text-[#5c3d2e] md:text-3xl">Categories</h2>
+            <p class="leading-relaxed text-gray-700">
+                Explore venues by category – <span class="font-semibold text-[#a0522d]">weddings, parties, or corporate events</span>.
+                Choose the perfect space and add services to make your event memorable.
+            </p>
+        </div>
+
+
+        <div class="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-2 sm:grid-cols-2 md:grid-cols-4">
+            <!-- Card 1 -->
+            <div class="relative overflow-hidden rounded-md p-2 shadow-md">
+                <img src="_content/MyApp.Shared/images/fare3.jpg" alt="Wedding Halls" class="h-48 w-full object-cover">
+                <h3 class="absolute bottom-2 left-2 rounded bg-black/50 px-2 py-1 text-lg font-semibold text-white">
+                    Wedding Halls
+                </h3>
+            </div>
+            <!-- Card 2 -->
+            <div class="relative overflow-hidden rounded-md p-2 shadow-md">
+                <img src="_content/MyApp.Shared/images/wed2.jpeg" alt="Party Venues" class="h-48 w-full object-cover">
+                <h3 class="absolute bottom-2 left-2 rounded bg-black/50 px-2 py-1 text-lg font-semibold text-white">
+                    Party Venues
+                </h3>
+            </div>
+            <!-- Card 3 -->
+            <div class="relative overflow-hidden rounded-md p-2 shadow-md">
+                <img src="_content/MyApp.Shared/images/wed1.jpg" alt="Corporate Halls" class="h-48 w-full object-cover">
+                <h3 class="absolute bottom-2 left-2 rounded bg-black/50 px-2 py-1 text-lg font-semibold text-white">
+                    Corporate Halls
+                </h3>
+            </div>
+            <!-- Card 4 -->
+            <div class="relative overflow-hidden rounded-md p-2 shadow-md">
+                <img src="_content/MyApp.Shared/images/fare2.jpg" alt="Event Services" class="h-48 w-full object-cover">
+                <h3 class="absolute bottom-2 left-2 rounded bg-black/50 px-2 py-1 text-lg font-semibold text-white">
+                    Event Services
+                </h3>
+            </div>
+        </div>
+
+
+        <!-- Text under section -->
+     
+    </section>
+
+    <!-- Why Book With Us -->
+    <section class="bg-[#3e2c24] py-12">
+        <h2 class="mb-8 text-center text-3xl font-bold text-white">Why Book With Us?</h2>
+        <div class="mx-auto grid max-w-5xl grid-cols-2 gap-8 px-4 text-center md:grid-cols-5">
+            <!-- Wide Venue Options -->
+            <div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#f2f4f3]/50 shadow-md">
+                    <!-- Building Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#a0522d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-6a2 2 0 012-2h14a2 2 0 012 2v6M3 10V3h18v7M9 21v-4h6v4" />
+                    </svg>
+                </div>
+                <p class="mt-3 font-medium text-white">Wide Venue Options</p>
+            </div>
+
+            <!-- Easy Booking -->
+            <div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#f2f4f3]/50 shadow-md">
+                    <!-- Calendar Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#a0522d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <p class="mt-3 font-medium text-white">Easy Booking</p>
+            </div>
+
+            <!-- Catering & Décor -->
+            <div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#f2f4f3]/50 shadow-md">
+                    <!-- Fork & Knife Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#a0522d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v20M8 12h8M8 16h8M8 8h8" />
+                    </svg>
+                </div>
+                <p class="mt-3 font-medium text-white">Catering & Décor</p>
+            </div>
+
+            <!-- Time-Slot Booking -->
+            <div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#f2f4f3]/50 shadow-md">
+                    <!-- Clock Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#a0522d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p class="mt-3 font-medium text-white">Time-Slot Booking</p>
+            </div>
+
+            <!-- Online Payment -->
+            <div>
+                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[#f2f4f3]/50 shadow-md">
+                    <!-- Credit Card Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-[#a0522d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M3 11h18M5 15h4m-4 4h4M17 15h4m-4 4h4" />
+                    </svg>
+                </div>
+                <p class="mt-3 font-medium text-white">Online Payment</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Inspiration Gallery -->
+    <section class="border-1 border-b-[#3e2c24] py-12">
+        <h2 class="mb-8 text-center text-3xl font-bold text-[#5c3d2e]">Venue Gallery</h2>
+        <div class="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-2 md:grid-cols-4">
+            <img src="_content/MyApp.Shared/images/venu1.jpg" class="h-45 rounded-lg shadow-md" alt="Venue 1">
+            <img src="_content/MyApp.Shared/images/venu2.jpeg" class="h-45 rounded-lg shadow-md" alt="Venue 2">
+            <img src="_content/MyApp.Shared/images/venu3.jpg" class="h-45 rounded-lg shadow-md" alt="Venue 3">
+            <img src="_content/MyApp.Shared/images/venu4.jpg" class="h-45 rounded-lg shadow-md" alt="Venue 4">
+        </div>
+        <a href="/Menu" class="mt-6 block text-center text-xl font-bold text-[#a0522d] hover:text-[#d2a679]">View More →</a>
+    </section>
+    <!-- Testimonials -->
+    <section class="py-12">
+        <h2 class="mb-8 text-center text-3xl font-bold text-[#3e2c24]">What Our Users Say?</h2>
+        <div class="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 md:grid-cols-3">
+            <div class="rounded-lg bg-white p-6 shadow-md">
+                <blockquote class="text-gray-700">"Booking our wedding hall was so simple. Everything was managed perfectly!"</blockquote>
+                <p class="mt-4 text-right font-medium text-[#a0522d]">- Sarah & Ahmed</p>
+            </div>
+            <div class="rounded-lg bg-white p-6 shadow-md">
+                <blockquote class="text-gray-700">"Found the perfect venue for our farewell party. Great experience!"</blockquote>
+                <p class="mt-4 text-right font-medium text-[#a0522d]">- University Students</p>
+            </div>
+            <div class="rounded-lg bg-white p-6 shadow-md">
+                <blockquote class="text-gray-700">"We arranged our corporate event smoothly with catering included. Highly recommend!"</blockquote>
+                <p class="mt-4 text-right font-medium text-[#a0522d]">- Tech Solutions</p>
+            </div>
+        </div>
+    </section>
+</div>
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private string factor => FormFactor.GetFormFactor();
+    private string platform => FormFactor.GetPlatform();
+    private string _name = "";
+    private bool _redirecting = false;
+
+    private bool? _isAdmin = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authstate = await AuthStateTask;
+        var user = authstate.User;
+
+        _name = user.Identity?.Name ?? "No identity";
+
+        var isAdminClaim = user.FindFirst("IsAdmin")?.Value;
+        _isAdmin = isAdminClaim?.ToLower() == "true" || user.IsInRole("Admin");
+    }
+    private void NavigateToMenu()
+    {
+        Navigation.NavigateTo("/Menu");
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _isAdmin == true)
+        {
+            _redirecting = true;
+            StateHasChanged(); // hide UI before redirect
+            Navigation.NavigateTo("/stats", forceLoad: true);
+        }
+    }
+}

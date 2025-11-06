@@ -1,0 +1,306 @@
+﻿@page "/venues"
+@using MyApp.Shared.Dtos.Venue
+@layout AdminLayout
+@inject IVenueService VenueService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div class="mx-auto max-w-7xl">
+        <div class="animate-fade-in mb-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+            <h1 class="text-3xl font-bold text-gray-900">Venues</h1>
+            <button @onclick="NavigateToCreateVenue" class="w-full rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none md:w-auto">
+                + Create Venue
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                <p class="text-sm text-red-600">@errorMessage</p>
+            </div>
+        }
+
+        <div class="animate-slide-up hidden overflow-x-auto rounded-lg bg-white shadow-md sm:block">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-[#f5e6d3]">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Image</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-sm font-semibold text-[#3e2c24]">Type</th>
+                        <th scope="col" class="px-6 py-3 text-right text-sm font-semibold text-[#3e2c24]">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @if (venues == null)
+                    {
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-800">Loading...</td>
+                        </tr>
+                    }
+                    else if (!venues.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-800">No venues found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var venue in venues)
+                        {
+                            <tr class="transition-colors hover:bg-gray-50">
+                                <td class="px-6 py-4 text-sm text-gray-800">
+                                    @if (venue.ImageUrls != null && venue.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                                    {
+                                        var imageUrl = venue.ImageUrls.First(url => !string.IsNullOrWhiteSpace(url) && url != "string");
+                                        <div class="relative h-12 w-12">
+                                            @if (!imageLoaded.ContainsKey(venue.Id) || !imageLoaded[venue.Id])
+                                            {
+                                                <div class="absolute inset-0 flex items-center justify-center">
+                                                    <svg class="h-5 w-5 animate-spin text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                </div>
+                                            }
+                                            <img src="@ResolveImageUrl(imageUrl)" alt="@venue.Name" class="h-12 w-12 rounded-full object-cover" @onload="() => ImageLoaded(venue.Id)" @onerror="() => HandleImageError(venue.Id, imageUrl)" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gray-200">
+                                            <span class="text-xs text-gray-500">No Image</span>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-800">@venue.Name</td>
+                                <td class="px-6 py-4 text-sm text-gray-800">@venue.Type</td>
+                                <td class="px-6 py-4 text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-3">
+                                        <button @onclick="() => NavigateToViewVenue(venue.Id)" class="text-[#a0522d] hover:text-[#3e2c24]" title="View">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
+                                        <button @onclick="() => NavigateToEditVenue(venue.Id)" class="text-[#a0522d] hover:text-[#3e2c24]" title="Edit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" />
+                                            </svg>
+                                        </button>
+                                        <button @onclick="() => DeleteVenue(venue.Id)" class="text-red-600 hover:text-red-800" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="animate-slide-up space-y-4 sm:hidden">
+            @if (venues == null)
+            {
+                <div class="rounded-lg bg-white p-4 text-center text-sm text-gray-800 shadow-md">Loading...</div>
+            }
+            else if (!venues.Any())
+            {
+                <div class="rounded-lg bg-white p-4 text-center text-sm text-gray-800 shadow-md">No venues found.</div>
+            }
+            else
+            {
+                @foreach (var venue in venues)
+                {
+                    <div class="rounded-lg border-l-4 border-[#a0522d] bg-white p-4 shadow-md transition-shadow hover:shadow-lg">
+                        <div class="flex items-center space-x-4">
+                            @if (venue.ImageUrls != null && venue.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                            {
+                                var imageUrl = venue.ImageUrls.First(url => !string.IsNullOrWhiteSpace(url) && url != "string");
+                                <div class="relative h-16 w-16 flex-shrink-0">
+                                    @if (!imageLoaded.ContainsKey(venue.Id) || !imageLoaded[venue.Id])
+                                    {
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <svg class="h-6 w-6 animate-spin text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </div>
+                                    }
+                                    <img src="@ResolveImageUrl(imageUrl)" alt="@venue.Name" class="h-16 w-16 rounded-lg object-cover" @onload="() => ImageLoaded(venue.Id)" @onerror="() => HandleImageError(venue.Id, imageUrl)" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200">
+                                    <span class="text-xs text-gray-500">No Image</span>
+                                </div>
+                            }
+
+                            <div class="min-w-0 flex-1">
+                                <p class="truncate text-lg font-bold text-gray-900">@venue.Name</p>
+                                <p class="text-sm text-gray-500">@venue.Type</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex justify-between border-t border-gray-100 pt-3">
+                            <button @onclick="() => NavigateToViewVenue(venue.Id)" class="flex items-center text-[#a0522d] hover:text-[#3e2c24] text-sm font-medium" title="View">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                                View
+                            </button>
+                            <button @onclick="() => NavigateToEditVenue(venue.Id)" class="flex items-center text-[#a0522d] hover:text-[#3e2c24] text-sm font-medium" title="Edit">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6 3 3-6 6H9v-3z" /></svg>
+                                Edit
+                            </button>
+                            <button @onclick="() => DeleteVenue(venue.Id)" class="flex items-center text-red-600 hover:text-red-800 text-sm font-medium" title="Delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.5s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>
+
+@code {
+    private List<VenueDto> venues = null;
+    private string errorMessage = string.Empty;
+    private Dictionary<Guid, bool> imageLoaded = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenues();
+    }
+
+    private async Task LoadVenues()
+    {
+        try
+        {
+            var result = await VenueService.GetAllVenuesAsync();
+            if (result.IsSuccess)
+            {
+                venues = result.Data;
+                foreach (var venue in venues)
+                {
+                    imageLoaded[venue.Id] = false;
+                }
+            }
+            else
+            {
+                errorMessage = result.Error;
+                venues = new List<VenueDto>();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venues: {ex.Message}";
+            venues = new List<VenueDto>();
+        }
+        StateHasChanged();
+    }
+
+    private void ImageLoaded(Guid venueId)
+    {
+        imageLoaded[venueId] = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleImageError(Guid venueId, string imageUrl)
+    {
+        var resolvedUrl = ResolveImageUrl(imageUrl);
+        await JSRuntime.InvokeVoidAsync("console.log", $"Image failed to load for venue {venueId}: {imageUrl} (Resolved: {resolvedUrl})");
+        var venue = venues.FirstOrDefault(v => v.Id == venueId);
+        if (venue != null && venue.ImageUrls != null && venue.ImageUrls.Any())
+        {
+            venue.ImageUrls.Remove(imageUrl);
+            imageLoaded[venueId] = false;
+            errorMessage = $"Failed to load image for {venue.Name}. It has been removed. Check if the file exists at {resolvedUrl}.";
+            StateHasChanged();
+        }
+    }
+
+    private string ResolveImageUrl(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl) || imageUrl == "string")
+            return "/Images/placeholder.jpg";
+        if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+            return imageUrl;
+        var baseUri = NavigationManager.BaseUri;
+        return new Uri(new Uri(baseUri), $"api/venues/images/{Path.GetFileName(imageUrl)}").ToString();
+    }
+
+    private void NavigateToCreateVenue()
+    {
+        NavigationManager.NavigateTo("/venues/create");
+    }
+
+    private void NavigateToViewVenue(Guid venueId)
+    {
+        NavigationManager.NavigateTo($"/venues/{venueId}");
+    }
+
+    private void NavigateToEditVenue(Guid venueId)
+    {
+        NavigationManager.NavigateTo($"/venues/{venueId}/edit");
+    }
+
+    private async Task DeleteVenue(Guid venueId)
+    {
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Are you sure you want to delete this venue?");
+        if (!confirm) return;
+        try
+        {
+            var result = await VenueService.DeleteVenueAsync(venueId);
+            if (result.IsSuccess)
+            {
+                await LoadVenues();
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to delete venue: {ex.Message}";
+        }
+        StateHasChanged();
+    }
+}

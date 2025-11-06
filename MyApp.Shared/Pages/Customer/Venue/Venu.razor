@@ -1,0 +1,392 @@
+﻿@page "/Menu"
+@using MyApp.Shared.Services
+@using MyApp.Shared.Dtos.Venue
+@inject IFormFactor FormFactor
+@inject IVenueService VenueService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+<PageTitle>Venues</PageTitle>
+
+<div class="min-h-screen bg-gray-50">
+    <!-- Search Bar Section -->
+    <div class="border-b border-gray-200 bg-white shadow-sm">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+                <div class="flex flex-1 items-center space-x-4">
+                    <div class="max-w-lg flex-1">
+                        <div class="relative flex gap-2">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input @bind="searchQuery"
+                                   @oninput="OnSearchInput"
+                                   type="text"
+                                   class="placeholder-gray-500 block w-full rounded-lg border border-gray-300 bg-white py-2 pr-3 pl-10 text-sm text-black focus:border-[#a0522d] focus:ring-1 focus:ring-[#a0522d] focus:outline-none"
+                                   placeholder="Search venues..." />
+                            <button @onclick="FilterVenues"
+                                    class="rounded-lg bg-[#a0522d] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#8b4513] focus:ring-2 focus:ring-[#a0522d] focus:ring-offset-2 focus:outline-none">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <button @onclick="NavigateToAllPackages"
+                            class="rounded-lg bg-[#a0522d] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#8b4513] focus:ring-2 focus:ring-[#a0522d] focus:ring-offset-2 focus:outline-none">
+                        Explore All Packages
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="flex flex-col gap-8 lg:flex-row">
+            <!-- Filters Sidebar -->
+            <div class="w-full flex-shrink-0 lg:w-80">
+                <div class="sticky top-8 rounded-lg bg-white p-6 shadow-sm">
+                    <div class="mb-6 flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">Filters</h2>
+                        <button @onclick="ClearAllFilters" class="text-sm text-[#a0522d] hover:text-[#8b4513]">
+                            Clear All
+                        </button>
+                    </div>
+
+                    <!-- Type Filter -->
+                    <div class="mb-6">
+                        <h3 class="mb-3 text-sm font-medium text-gray-900">Venue Type</h3>
+                        <div class="max-h-40 space-y-2 overflow-y-auto">
+                            @if (typeOptions.Any())
+                            {
+                                @foreach (var type in typeOptions)
+                                {
+                                    <label class="flex items-center rounded px-2 py-1 hover:bg-gray-50">
+                                        <input type="checkbox" checked="@selectedTypes.Contains(type)"
+                                               @onchange="@((e) => ToggleType(type, (bool)e.Value))"
+                                               class="h-4 w-4 rounded border-gray-300 text-[#a0522d] focus:ring-[#a0522d]" />
+                                        <span class="ml-2 text-sm text-gray-700">@type</span>
+                                    </label>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-sm text-gray-500">No types available</p>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- City Filter -->
+                    <div class="mb-6">
+                        <h3 class="mb-3 text-sm font-medium text-gray-900">City</h3>
+                        <div class="max-h-40 space-y-2 overflow-y-auto">
+                            @if (cityOptions.Any())
+                            {
+                                @foreach (var city in cityOptions)
+                                {
+                                    <label class="flex items-center rounded px-2 py-1 hover:bg-gray-50">
+                                        <input type="checkbox" checked="@selectedCities.Contains(city)"
+                                               @onchange="@((e) => ToggleCity(city, (bool)e.Value))"
+                                               class="h-4 w-4 rounded border-gray-300 text-[#a0522d] focus:ring-[#a0522d]" />
+                                        <span class="ml-2 text-sm text-gray-700">@city</span>
+                                    </label>
+                                }
+                            }
+                            else
+                            {
+                                <p class="text-sm text-gray-500">No cities available</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-4">
+                        <p class="text-sm text-gray-600">
+                            Showing <span class="font-semibold">@filteredVenues?.Count</span> venues
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Venues Grid -->
+            <div class="flex-1">
+                <h1 class="mb-8 text-3xl font-bold text-gray-900">Available Venues</h1>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="mb-6 rounded-md border border-red-200 bg-red-50 p-4">
+                        <p class="text-sm text-red-700">@errorMessage</p>
+                    </div>
+                }
+
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    @if (filteredVenues == null)
+                    {
+                        <!-- Loading -->
+                        @for (int i = 0; i < 6; i++)
+                        {
+                            <div class="rounded-lg bg-white p-6 shadow-md">
+                                <div class="animate-pulse">
+                                    <div class="mb-4 h-48 rounded-lg bg-gray-200"></div>
+                                    <div class="mb-2 h-6 w-3/4 rounded bg-gray-200"></div>
+                                    <div class="mb-4 h-4 w-1/2 rounded bg-gray-200"></div>
+                                    <div class="mb-2 h-10 w-full rounded bg-gray-200"></div>
+                                    <div class="h-10 w-full rounded bg-gray-200"></div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else if (!filteredVenues.Any())
+                    {
+                        <div class="col-span-full rounded-lg bg-white p-12 text-center shadow-sm">
+                            <svg class="mx-auto mb-4 h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="mb-2 text-lg font-medium text-gray-900">No venues found</h3>
+                            <p class="mb-4 text-sm text-gray-500">Try adjusting your filters or search terms.</p>
+                            <button @onclick="ClearAllFilters" class="inline-flex items-center rounded-md bg-[#a0522d] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#8b4513]">
+                                Clear all filters
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var venue in filteredVenues)
+                        {
+                            <div class="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md transition-all hover:shadow-lg">
+                                @if (venue.ImageUrls != null && venue.ImageUrls.Any(url => !string.IsNullOrWhiteSpace(url) && url != "string"))
+                                {
+                                    var imageUrl = venue.ImageUrls.First(url => !string.IsNullOrWhiteSpace(url) && url != "string");
+                                    <div class="relative h-48 w-full">
+                                        @if (!imageLoaded.ContainsKey(venue.Id) || !imageLoaded[venue.Id])
+                                        {
+                                            <div class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                                                <svg class="h-8 w-8 animate-spin text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0 c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                            </div>
+                                        }
+                                        <img src="@ResolveImageUrl(imageUrl)" alt="@venue.Name"
+                                             class="h-48 w-full object-cover"
+                                             @onload="() => ImageLoaded(venue.Id)"
+                                             @onerror="() => HandleImageError(venue.Id, imageUrl)" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="flex h-48 w-full items-center justify-center bg-gray-100">
+                                        <span class="text-sm text-gray-500">No Image Available</span>
+                                    </div>
+                                }
+                                <div class="p-6">
+                                    <div class="mb-3 flex items-start justify-between">
+                                        <h3 class="text-xl font-semibold text-gray-900">@venue.Name</h3>
+                                        @if (!string.IsNullOrWhiteSpace(venue.Type))
+                                        {
+                                            <span class="inline-flex items-center rounded-full bg-[#a0522d] px-2.5 py-0.5 text-xs font-medium text-white">
+                                                @venue.Type
+                                            </span>
+                                        }
+                                    </div>
+                                    <p class="mb-2 text-sm font-medium text-gray-600">@GetCityFromAddress(venue.Address)</p>
+                                    <p class="mb-4 text-sm text-gray-700">
+                                        @venue.Address
+                                    </p>
+                                    <div class="flex flex-col gap-2">
+                                        <button @onclick="() => NavigateToDetails(venue.Id)"
+                                                class="w-full rounded-md bg-[#a0522d] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#8b4513]">
+                                            View Details
+                                        </button>
+                                        <button @onclick="() => NavigateToVenuePackages(venue.Id)"
+                                                class="w-full rounded-md border border-[#a0522d] px-4 py-2 text-sm font-medium text-[#a0522d] transition-colors hover:bg-[#a0522d] hover:text-white">
+                                            View Packages
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<VenueDto> allVenues = new();
+    private List<VenueDto> filteredVenues = null;
+    private string searchQuery = string.Empty;
+    private List<string> selectedTypes = new();
+    private List<string> selectedCities = new();
+    private List<string> typeOptions = new();
+    private List<string> cityOptions = new();
+    private Dictionary<Guid, bool> imageLoaded = new();
+    private string errorMessage = string.Empty;
+    private System.Threading.Timer? searchTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenues();
+    }
+
+    private async Task LoadVenues()
+    {
+        try
+        {
+            var result = await VenueService.GetAllVenuesAsync();
+            if (result.IsSuccess && result.Data != null)
+            {
+                allVenues = result.Data;
+                filteredVenues = new List<VenueDto>(allVenues);
+                foreach (var v in allVenues)
+                    imageLoaded[v.Id] = false;
+
+                typeOptions = allVenues
+                    .Where(v => !string.IsNullOrWhiteSpace(v.Type))
+                    .Select(v => v.Type.Trim())
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(x => x)
+                    .ToList();
+
+                cityOptions = allVenues
+                    .Select(v => GetCityFromAddress(v.Address))
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(x => x)
+                    .ToList();
+            }
+            else
+            {
+                errorMessage = result.Error ?? "Failed to load venues.";
+                allVenues = new();
+                filteredVenues = new();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venues: {ex.Message}";
+            allVenues = new();
+            filteredVenues = new();
+        }
+        StateHasChanged();
+    }
+
+    private static string GetCityFromAddress(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+            return string.Empty;
+        var parts = address.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return parts.Length > 0 ? parts[^1].Trim() : address.Trim();
+    }
+
+    private void FilterVenues()
+    {
+        if (allVenues == null)
+        {
+            filteredVenues = new List<VenueDto>();
+            return;
+        }
+
+        var q = searchQuery?.Trim() ?? string.Empty;
+
+        filteredVenues = allVenues
+            .Where(v =>
+                (string.IsNullOrWhiteSpace(q) ||
+                 (!string.IsNullOrWhiteSpace(v.Name) && v.Name.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                 (!string.IsNullOrWhiteSpace(v.Type) && v.Type.Contains(q, StringComparison.OrdinalIgnoreCase)) ||
+                 GetCityFromAddress(v.Address).Contains(q, StringComparison.OrdinalIgnoreCase) ||
+                 (!string.IsNullOrWhiteSpace(v.Address) && v.Address.Contains(q, StringComparison.OrdinalIgnoreCase))) &&
+                (!selectedTypes.Any() || (!string.IsNullOrWhiteSpace(v.Type) && selectedTypes.Contains(v.Type))) &&
+                (!selectedCities.Any() || selectedCities.Contains(GetCityFromAddress(v.Address)))
+            )
+            .ToList();
+        StateHasChanged();
+    }
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? "";
+        // Debounce search - apply filters after 500ms of no typing
+        searchTimer?.Dispose();
+        searchTimer = new System.Threading.Timer(_ =>
+        {
+            InvokeAsync(FilterVenues);
+        }, null, 500, Timeout.Infinite);
+    }
+
+    private void ToggleType(string type, bool isSelected)
+    {
+        if (isSelected)
+            selectedTypes.Add(type);
+        else
+            selectedTypes.Remove(type);
+        FilterVenues();
+    }
+
+    private void ToggleCity(string city, bool isSelected)
+    {
+        if (isSelected)
+            selectedCities.Add(city);
+        else
+            selectedCities.Remove(city);
+        FilterVenues();
+    }
+
+    private void ClearAllFilters()
+    {
+        searchQuery = "";
+        selectedTypes.Clear();
+        selectedCities.Clear();
+        FilterVenues();
+    }
+
+    private void ImageLoaded(Guid venueId)
+    {
+        imageLoaded[venueId] = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleImageError(Guid venueId, string imageUrl)
+    {
+        var resolvedUrl = ResolveImageUrl(imageUrl);
+        await JSRuntime.InvokeVoidAsync("console.log", $"Image failed to load for venue {venueId}: {imageUrl} (Resolved: {resolvedUrl})");
+        var venue = allVenues.FirstOrDefault(v => v.Id == venueId);
+        if (venue != null && venue.ImageUrls != null && venue.ImageUrls.Any())
+        {
+            venue.ImageUrls.Remove(imageUrl);
+            imageLoaded[venueId] = false;
+            StateHasChanged();
+        }
+    }
+
+    private string ResolveImageUrl(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl) || imageUrl == "string")
+            return "/Images/placeholder.jpg";
+        if (Uri.IsWellFormedUriString(imageUrl, UriKind.Absolute))
+            return imageUrl;
+        var baseUri = Navigation.BaseUri;
+        return new Uri(new Uri(baseUri), $"api/venues/images/{Path.GetFileName(imageUrl)}").ToString();
+    }
+
+    private void NavigateToDetails(Guid venueId)
+    {
+        Navigation.NavigateTo($"/venues/details/{venueId}");
+    }
+
+    private void NavigateToVenuePackages(Guid venueId)
+    {
+        Navigation.NavigateTo($"/venues/{venueId}/packages");
+    }
+
+    private void NavigateToAllPackages()
+    {
+        Navigation.NavigateTo("/packages");
+    }
+
+    public void Dispose()
+    {
+        searchTimer?.Dispose();
+    }
+}

@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="_content/MyApp.Shared/css/outputfile.css" />
+
+    <base href="/" />
+    <link rel="stylesheet" href="_content/MyApp.Shared/css/outputfile.css" />
+    <link rel="stylesheet" href="_content/MyApp.Shared/tailwind.output.css" />
+
+    <link rel="icon" type="image/png" href="_content/MyApp.Shared/Images/logo.png" />
+    <HeadOutlet @rendermode="DynamicRenderMode" />
+</head>
+
+<body>
+    <Routes @rendermode="DynamicRenderMode" />
+    <script src="_framework/blazor.web.js"></script>
+</body>
+
+@code{
+    [CascadingParameter]
+    public HttpContext HttpContext { get; set; } = default!;
+    // public IComponentRenderMode? DynamicRenderMode =>
+    //    HttpContext!.AcceptsInteractiveRouting() ? InteractiveServer : null;
+            public IComponentRenderMode? DynamicRenderMode =>
+          HttpContext!.Request.Path.StartsWithSegments("/auth") ? null : InteractiveServer ;
+
+}
+</html>

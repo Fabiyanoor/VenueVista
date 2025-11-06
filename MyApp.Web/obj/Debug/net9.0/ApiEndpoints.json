@@ -1,0 +1,1393 @@
+[
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "GetAll",
+    "RelativePath": "api/additional-services",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "Create",
+    "RelativePath": "api/additional-services",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "GetById",
+    "RelativePath": "api/additional-services/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "Update",
+    "RelativePath": "api/additional-services/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "Delete",
+    "RelativePath": "api/additional-services/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "GetByCategory",
+    "RelativePath": "api/additional-services/category/{category}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "category",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.AdditionalServicesController",
+    "Method": "GetByVenueId",
+    "RelativePath": "api/additional-services/venue/{venueId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AdditionalServiceEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAdditionalServiceEndpoints\u003Eb__0_1",
+    "RelativePath": "api/app/additional-services/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.AdditionalServiceDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AdditionalServiceEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAdditionalServiceEndpoints\u003Eb__0_2",
+    "RelativePath": "api/app/additional-services/{id:guid}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateAdditionalServiceDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.AdditionalServiceDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AdditionalServiceEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAdditionalServiceEndpoints\u003Eb__0_3",
+    "RelativePath": "api/app/additional-services/{id:guid}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AdditionalServiceEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAdditionalServiceEndpoints\u003Eb__0_4",
+    "RelativePath": "api/app/additional-services/{id:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.AdditionalServiceDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AdditionalServiceEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAdditionalServiceEndpoints\u003Eb__0_6",
+    "RelativePath": "api/app/additional-services/all",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Venue.AdditionalServiceDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AdditionalServiceEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAdditionalServiceEndpoints\u003Eb__0_5",
+    "RelativePath": "api/app/additional-services/venue/{venueId:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Venue.AdditionalServiceDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_1",
+    "RelativePath": "api/app/bookings/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bookingDto",
+        "Type": "MyApp.Shared.Dtos.Booking.CreateBookingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Booking.BookingDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_2",
+    "RelativePath": "api/app/bookings/{id:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Booking.BookingWithUserDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_4",
+    "RelativePath": "api/app/bookings/{id:guid}/cancel",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_6",
+    "RelativePath": "api/app/bookings/all",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Booking.BookingWithUserDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_5",
+    "RelativePath": "api/app/bookings/availability/{venueId:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "startTime",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "duration",
+        "Type": "System.Double",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Booking.VenueAvailabilityDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_7",
+    "RelativePath": "api/app/bookings/date-range",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Booking.BookingWithUserDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_8",
+    "RelativePath": "api/app/bookings/user/{userId:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Booking.BookingWithUserDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_9",
+    "RelativePath": "api/app/bookings/user/{userId:guid}/date-range",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Booking.BookingWithUserDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.BookingEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapBookingEndpoints\u003Eb__0_3",
+    "RelativePath": "api/app/bookings/venue/{venueId:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Booking.BookingDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_1",
+    "RelativePath": "api/app/packages/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "packageDto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateVenuePackageDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.VenuePackageDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_6",
+    "RelativePath": "api/app/packages/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Venue.VenuePackageDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_2",
+    "RelativePath": "api/app/packages/{id:guid}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "packageDto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateVenuePackageDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.VenuePackageDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_3",
+    "RelativePath": "api/app/packages/{id:guid}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_4",
+    "RelativePath": "api/app/packages/{id:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.VenuePackageDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_7",
+    "RelativePath": "api/app/packages/filter",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Type": "MyApp.Shared.Dtos.VenuePackage.PackageFilterDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Venue.VenuePackageDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_8",
+    "RelativePath": "api/app/packages/filter-options",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.VenuePackage.PackageFilterOptionsDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenuePackageEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenuePackageEndpoints\u003Eb__0_5",
+    "RelativePath": "api/app/packages/venue/{venueId:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Venue.VenuePackageDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_1",
+    "RelativePath": "api/app/users/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.User.UserSummaryDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_2",
+    "RelativePath": "api/app/users/{id:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.User.UserDetailsDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.UserEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapUserEndpoints\u003Eb__0_3",
+    "RelativePath": "api/app/users/{id:guid}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MyApp.Shared.Dtos.User.UpdateUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenueEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenueEndpoints\u003Eb__0_1",
+    "RelativePath": "api/app/venue/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[System.Collections.Generic.List\u00601[[MyApp.Shared.Dtos.Venue.VenueDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenueEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenueEndpoints\u003Eb__0_3",
+    "RelativePath": "api/app/venue/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueDto",
+        "Type": "MyApp.Shared.Dtos.CreateVenueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.VenueDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenueEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenueEndpoints\u003Eb__0_2",
+    "RelativePath": "api/app/venue/{id:guid}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.VenueDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenueEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenueEndpoints\u003Eb__0_4",
+    "RelativePath": "api/app/venue/{id:guid}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "venueDto",
+        "Type": "MyApp.Shared.Dtos.CreateVenueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.Venue.VenueDto, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.VenueEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMapVenueEndpoints\u003Eb__0_5",
+    "RelativePath": "api/app/venue/{id:guid}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AuthEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEnpoints\u003Eb__0_1",
+    "RelativePath": "api/auth/Login",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "MyApp.Shared.Dtos.User.LoginModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult\u00601[[MyApp.Shared.Dtos.User.LoggedInUserWithToken, MyApp.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Endpoints.AuthEndpoint\u002B\u003C\u003Ec",
+    "Method": "\u003CMapAuthEnpoints\u003Eb__0_0",
+    "RelativePath": "api/auth/register",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "MyApp.Shared.Dtos.User.RegisterModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MyApp.Shared.Dtos.User.MethodResult",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "CreateBooking",
+    "RelativePath": "api/bookings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "bookingDto",
+        "Type": "MyApp.Shared.Dtos.Booking.CreateBookingDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetAllBookingsWithUserInfo",
+    "RelativePath": "api/bookings",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetBookingById",
+    "RelativePath": "api/bookings/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "CancelBooking",
+    "RelativePath": "api/bookings/{id}/cancel",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetBookingsByDateRange",
+    "RelativePath": "api/bookings/date-range",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetBookingsByPackage",
+    "RelativePath": "api/bookings/package/{packageId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "packageId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetBookingsByUserId",
+    "RelativePath": "api/bookings/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetBookingsByUserIdAndDateRange",
+    "RelativePath": "api/bookings/user/{userId}/date-range",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "GetBookingsByVenue",
+    "RelativePath": "api/bookings/venue/{venueId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.BookingsController",
+    "Method": "CheckVenueAvailability",
+    "RelativePath": "api/bookings/venue/{venueId}/availability",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "startTime",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "duration",
+        "Type": "System.Double",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.UsersController",
+    "Method": "GetAllUsers",
+    "RelativePath": "api/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.UsersController",
+    "Method": "GetUserDetails",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.UsersController",
+    "Method": "UpdateUser",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "MyApp.Shared.Dtos.User.UpdateUserDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "GetAllPackages",
+    "RelativePath": "api/venue-packages",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "CreatePackage",
+    "RelativePath": "api/venue-packages",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "packageDto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateVenuePackageDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "GetPackageById",
+    "RelativePath": "api/venue-packages/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "UpdatePackage",
+    "RelativePath": "api/venue-packages/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "packageDto",
+        "Type": "MyApp.Shared.Dtos.Venue.CreateVenuePackageDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "DeletePackage",
+    "RelativePath": "api/venue-packages/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "GetFilteredPackages",
+    "RelativePath": "api/venue-packages/filter",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "filter",
+        "Type": "MyApp.Shared.Dtos.VenuePackage.PackageFilterDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "GetFilterOptions",
+    "RelativePath": "api/venue-packages/filter-options",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuePackagesController",
+    "Method": "GetPackagesByVenueId",
+    "RelativePath": "api/venue-packages/venue/{venueId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venueId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "GetAllVenues",
+    "RelativePath": "api/venues",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "CreateVenue",
+    "RelativePath": "api/venues",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "venue",
+        "Type": "MyApp.Shared.Dtos.CreateVenueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "GetVenueById",
+    "RelativePath": "api/venues/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "UpdateVenue",
+    "RelativePath": "api/venues/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "venue",
+        "Type": "MyApp.Shared.Dtos.UpdateVenueDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "DeleteVenue",
+    "RelativePath": "api/venues/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "GetVenueDetails",
+    "RelativePath": "api/venues/{id}/details",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "UploadVenueImages",
+    "RelativePath": "api/venues/images",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "files",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "fileNamePrefix",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "MyApp.Web.Controllers.VenuesController",
+    "Method": "GetImage",
+    "RelativePath": "api/venues/images/{fileName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fileName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

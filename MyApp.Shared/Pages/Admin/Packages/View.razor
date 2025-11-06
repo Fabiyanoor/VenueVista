@@ -1,0 +1,144 @@
+﻿@page "/admin/packages/{Id:guid}"
+@layout AdminLayout
+@using MyApp.Shared.Dtos.Venue
+@inject IVenuePackageService PackageService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="animate-fade-in mb-8 flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-900">Package Details</h1>
+            <button @onclick="NavigateToEdit" class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                Edit Package
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                <p class="text-sm text-red-600">@errorMessage</p>
+            </div>
+        }
+
+        @if (package == null)
+        {
+            <div class="text-center text-gray-800">Loading...</div>
+        }
+        else
+        {
+            <div class="animate-slide-up rounded-lg bg-white p-6 shadow-md">
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Venue</h2>
+                        <p class="text-lg text-gray-900">@package.VenueName</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Name</h2>
+                        <p class="text-lg text-gray-900">@package.Name</p>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Description</h2>
+                    <p class="text-lg text-gray-900">@(string.IsNullOrEmpty(package.Description) ? "No description" : package.Description)</p>
+                </div>
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Tier</h2>
+                        <p class="text-lg text-gray-900">@package.Tier</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Base Price</h2>
+                        <p class="text-lg text-gray-900">$@package.BasePrice</p>
+                    </div>
+                </div>
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Base Capacity</h2>
+                        <p class="text-lg text-gray-900">@package.BaseCapacity</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Base Duration</h2>
+                        <p class="text-lg text-gray-900">@package.BaseDurationHours hours</p>
+                    </div>
+                </div>
+                <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Price per Additional Person</h2>
+                        <p class="text-lg text-gray-900">$@package.PricePerAdditionalPerson</p>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-medium text-gray-700">Price per Additional Hour</h2>
+                        <p class="text-lg text-gray-900">$@package.PricePerAdditionalHour</p>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Includes</h2>
+                    <p class="text-lg text-gray-900">
+                        @(package.IncludesDecoration ? "Decoration, " : "")
+                        @(package.IncludesCake ? "Cake, " : "")
+                        @(package.IncludesSoundSystem ? "Sound System" : "")
+                        @(string.IsNullOrEmpty(package.IncludedServicesDescription) ? "" : package.IncludedServicesDescription)
+                    </p>
+                </div>
+                <div class="mb-6">
+                    <h2 class="text-sm font-medium text-gray-700">Package Services</h2>
+                    @if (package.PackageServices.Any())
+                    {
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            @foreach (var service in package.PackageServices)
+                            {
+                                <div class="rounded-full bg-[#f5e6d3] px-3 py-1 text-sm text-[#3e2c24]">
+                                    @service.Name ($@service.Price)
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-lg text-gray-900">No services included</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private VenuePackageDto package = null;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPackage();
+    }
+
+    private async Task LoadPackage()
+    {
+        try
+        {
+            var result = await PackageService.GetPackageByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                package = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load package: {ex.Message}";
+        }
+        StateHasChanged();
+    }
+
+    private void NavigateToEdit()
+    {
+        Navigation.NavigateTo($"/admin/packages/{Id}/edit");
+    }
+}

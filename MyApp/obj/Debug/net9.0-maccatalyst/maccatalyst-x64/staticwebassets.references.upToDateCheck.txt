@@ -1,0 +1,9 @@
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json
+D:\VenueVista\MyApp\MyApp.Shared\obj\Debug\net9.0\staticwebassets.build.json

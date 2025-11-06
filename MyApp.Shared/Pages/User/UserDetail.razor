@@ -1,0 +1,171 @@
+﻿@page "/user/bookings/{Id:guid}"
+@using MyApp.Shared.Dtos.Booking
+@inject IBookingService BookingService
+@inject NavigationManager NavigationManager
+@layout UserLayout
+@attribute [Authorize]
+
+<div class="min-h-screen bg-gray-50 p-6">
+    <div class="mx-auto max-w-7xl">
+        @if (booking == null)
+        {
+            <div class="animate-fade-in flex flex-col items-center justify-center">
+                <p class="text-lg text-gray-600">Loading...</p>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <p class="mt-2 text-sm text-red-500">Error: @errorMessage</p>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Header -->
+            <div class="animate-fade-in mb-6 flex items-center justify-between">
+                <h1 class="text-3xl font-bold text-[#3e2c24]">Booking Details</h1>
+                <button @onclick="GoBack" class="rounded-md bg-[#a0522d] px-4 py-2 text-white transition-colors hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none">
+                    Back to My Bookings
+                </button>
+            </div>
+            <!-- Error Message -->
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="animate-fade-in mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                    <p class="text-sm text-red-600">@errorMessage</p>
+                </div>
+            }
+            <!-- Booking Details -->
+            <div class="animate-slide-up overflow-hidden rounded-lg bg-white shadow-md">
+                <div class="p-6">
+                    <h2 class="mb-4 text-2xl font-semibold text-[#3e2c24]">General Information</h2>
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Status</dt>
+                            <dd class="mt-1">
+                                <span class="@GetStatusBadgeClass(booking.Status)">@booking.Status</span>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Payment Status</dt>
+                            <dd class="mt-1">
+                                <span class="@GetPaymentStatusBadgeClass(booking.PaymentStatus)">@booking.PaymentStatus</span>
+                            </dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Start Time</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@booking.StartTime.ToString("g")</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">End Time</dt>
+                            <dd class="mt-1 text-sm text-gray-900">@booking.EndTime.ToString("g")</dd>
+                        </div>
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Total Cost</dt>
+                            <dd class="mt-1 text-lg font-semibold text-[#a0522d]">$@booking.TotalCost.ToString("F2")</dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="border-t border-gray-200 p-6">
+                    <h2 class="mb-4 text-2xl font-semibold text-[#3e2c24]">Venue Information</h2>
+                    <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                        <div>
+                            <dt class="text-sm font-medium text-gray-500">Venue Name</dt>
+                            <dd class="mt-1 text-lg font-medium text-gray-900">@booking.VenueName</dd>
+                        </div>
+                    </dl>
+                </div>
+                <!-- Additional Services Section -->
+                @if (booking.AdditionalServices != null && booking.AdditionalServices.Any())
+                {
+                    <div class="border-t border-gray-200 p-6">
+                        <h2 class="mb-4 text-2xl font-semibold text-[#3e2c24]">Additional Services</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Service Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Description</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white">
+                                    @foreach (var service in booking.AdditionalServices)
+                                    {
+                                        <tr>
+                                            <td class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900">@service.Name</td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                                @if (string.IsNullOrWhiteSpace(service.Description))
+                                                {
+                                                    <span class="text-gray-400">No description</span>
+                                                }
+                                                else
+                                                {
+                                                    @service.Description
+                                                }
+                                            </td>
+                                            <td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900">$@service.Price.ToString("F2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid Id { get; set; }
+    private BookingWithUserDto booking;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var result = await BookingService.GetBookingByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                booking = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load booking details: {ex.Message}";
+        }
+    }
+
+    private string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "confirmed" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800",
+            "pending" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800",
+            "canceled" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800",
+            _ => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"
+        };
+    }
+
+    private string GetPaymentStatusBadgeClass(string paymentStatus)
+    {
+        return paymentStatus?.ToLower() switch
+        {
+            "completed" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800",
+            "pending" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800",
+            "failed" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800",
+            "refunded" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800",
+            "canceled" => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800",
+            _ => "inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"
+        };
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/bookings");
+    }
+}

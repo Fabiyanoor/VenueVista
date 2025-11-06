@@ -1,0 +1,364 @@
+﻿@page "/admin/packages/{Id:guid}/edit"
+@layout AdminLayout
+@using MyApp.Shared.Dtos.Venue
+@using System.ComponentModel.DataAnnotations
+@inject IVenueService VenueService
+@inject IVenuePackageService PackageService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@attribute [Authorize]
+
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="mx-auto max-w-4xl px-4">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Edit Package</h1>
+            <p class="mt-2 text-gray-600">Update the package details</p>
+        </div>
+
+        <EditForm Model="@packageModel" OnValidSubmit="HandleValidSubmit" class="rounded-lg bg-white p-6 shadow-md">
+            <DataAnnotationsValidator />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="mb-4 rounded-md border border-red-200 bg-red-50 p-3">
+                    <p class="text-sm text-red-600">@errorMessage</p>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="mb-4 rounded-md border border-green-200 bg-green-50 p-3">
+                    <p class="text-sm text-green-600">@successMessage</p>
+                </div>
+            }
+
+            <!-- Venue Selection -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Venue</label>
+                <InputSelect @bind-Value="packageModel.VenueId"
+                             @oninput="@(() => isFormDirty = true)"
+                             class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none">
+                    <option value="">Select a venue</option>
+                    @foreach (var venue in venues)
+                    {
+                        <option value="@venue.Id">@venue.Name</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => packageModel.VenueId)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Name -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Package Name</label>
+                <InputText @bind-Value="packageModel.Name"
+                           @oninput="@(() => isFormDirty = true)"
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                <ValidationMessage For="@(() => packageModel.Name)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Description</label>
+                <InputTextArea @bind-Value="packageModel.Description"
+                               @oninput="@(() => isFormDirty = true)"
+                               class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                               rows="3" />
+                <ValidationMessage For="@(() => packageModel.Description)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Tier -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Tier</label>
+                <InputSelect @bind-Value="packageModel.Tier"
+                             @oninput="@(() => isFormDirty = true)"
+                             class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none">
+                    <option value="">Select tier</option>
+                    <option value="@PackageTier.Basic">Basic</option>
+                    <option value="@PackageTier.Intermediate">Intermediate</option>
+                    <option value="@PackageTier.Advance">Advance</option>
+                    <option value="@PackageTier.Custom">Custom</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => packageModel.Tier)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Base Capacity and Duration -->
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Base Capacity</label>
+                    <InputNumber @bind-Value="packageModel.BaseCapacity"
+                                 TValue="int"
+                                 @oninput="@(() => isFormDirty = true)"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.BaseCapacity)" class="text-sm text-red-600 mt-1" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Base Duration (hours)</label>
+                    <InputNumber @bind-Value="packageModel.BaseDurationHours"
+                                 TValue="int"
+                                 @oninput="@(() => isFormDirty = true)"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.BaseDurationHours)" class="text-sm text-red-600 mt-1" />
+                </div>
+            </div>
+
+            <!-- Base Price and Additional Pricing -->
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Base Price</label>
+                    <InputNumber @bind-Value="packageModel.BasePrice"
+                                 TValue="decimal"
+                                 @oninput="@(() => isFormDirty = true)"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.BasePrice)" class="text-sm text-red-600 mt-1" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Price per Additional Person</label>
+                    <InputNumber @bind-Value="packageModel.PricePerAdditionalPerson"
+                                 TValue="decimal"
+                                 @oninput="@(() => isFormDirty = true)"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.PricePerAdditionalPerson)" class="text-sm text-red-600 mt-1" />
+                </div>
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Price per Additional Hour</label>
+                    <InputNumber @bind-Value="packageModel.PricePerAdditionalHour"
+                                 TValue="decimal"
+                                 @oninput="@(() => isFormDirty = true)"
+                                 class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none" />
+                    <ValidationMessage For="@(() => packageModel.PricePerAdditionalHour)" class="text-sm text-red-600 mt-1" />
+                </div>
+            </div>
+
+            <!-- Includes -->
+            <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="flex items-center">
+                    <InputCheckbox @bind-Value="packageModel.IncludesDecoration"
+                                   @onchange="@(() => isFormDirty = true)" />
+                    <label class="ml-2 text-sm font-medium text-gray-700">Includes Decoration</label>
+                </div>
+                <div class="flex items-center">
+                    <InputCheckbox @bind-Value="packageModel.IncludesCake"
+                                   @onchange="@(() => isFormDirty = true)" />
+                    <label class="ml-2 text-sm font-medium text-gray-700">Includes Cake</label>
+                </div>
+                <div class="flex items-center">
+                    <InputCheckbox @bind-Value="packageModel.IncludesSoundSystem"
+                                   @onchange="@(() => isFormDirty = true)" />
+                    <label class="ml-2 text-sm font-medium text-gray-700">Includes Sound System</label>
+                </div>
+            </div>
+
+            <!-- Included Services Description -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Included Services Description</label>
+                <InputTextArea @bind-Value="packageModel.IncludedServicesDescription"
+                               @oninput="@(() => isFormDirty = true)"
+                               class="w-full rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                               rows="3" />
+                <ValidationMessage For="@(() => packageModel.IncludedServicesDescription)" class="text-sm text-red-600 mt-1" />
+            </div>
+
+            <!-- Package Services -->
+            <div class="mb-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">Package Services (Add one at a time)</label>
+                <div class="mb-2 flex flex-col gap-2 sm:flex-row">
+                    <InputText @bind-Value="newService.Name"
+                               @oninput="@(() => isFormDirty = true)"
+                               class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                               placeholder="Service name" />
+                    <InputNumber @bind-Value="newService.Price"
+                                 TValue="decimal"
+                                 @oninput="@(() => isFormDirty = true)"
+                                 class="w-full sm:w-32 rounded-md border border-gray-300 px-3 py-2 text-black focus:ring-2 focus:ring-[#a0522d] focus:outline-none"
+                                 placeholder="Price" />
+                    <button type="button" @onclick="AddService"
+                            disabled="@(string.IsNullOrWhiteSpace(newService.Name))"
+                            class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                        Add
+                    </button>
+                </div>
+                @if (packageModel.PackageServices.Any())
+                {
+                    <div class="mt-2 flex flex-wrap gap-2">
+                        @foreach (var service in packageModel.PackageServices)
+                        {
+                            <div class="flex items-center rounded-full bg-[#f5e6d3] px-3 py-1 text-sm text-[#3e2c24]">
+                                @service.Name ($@service.Price)
+                                <button type="button" @onclick="() => RemoveService(service)" class="ml-2 text-[#a0522d] hover:text-[#3e2c24]">
+                                    &times;
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end gap-3">
+                <button type="button" @onclick="Cancel" disabled="@isSubmitting"
+                        class="rounded-md border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50 focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                    Cancel
+                </button>
+                <button type="submit" disabled="@isSubmitting"
+                        class="rounded-md bg-[#a0522d] px-4 py-2 text-white hover:bg-[#d2a679] focus:ring-2 focus:ring-[#d2a679] focus:outline-none disabled:opacity-50">
+                    @if (isSubmitting)
+                    {
+                        <span>Updating...</span>
+                    }
+                    else
+                    {
+                        <span>Update Package</span>
+                    }
+                </button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private CreateVenuePackageDto packageModel = new();
+    private List<VenueDto> venues = new();
+    private CreatePackageServiceDto newService = new();
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
+    private bool isSubmitting = false;
+    private bool isFormDirty = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadVenues();
+        await LoadPackage();
+    }
+
+    private async Task LoadVenues()
+    {
+        try
+        {
+            var result = await VenueService.GetAllVenuesAsync();
+            if (result.IsSuccess)
+            {
+                venues = result.Data;
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load venues: {ex.Message}";
+        }
+    }
+
+    private async Task LoadPackage()
+    {
+        try
+        {
+            var result = await PackageService.GetPackageByIdAsync(Id);
+            if (result.IsSuccess)
+            {
+                var package = result.Data;
+                packageModel = new CreateVenuePackageDto
+                {
+                    VenueId = package.VenueId,
+                    Name = package.Name,
+                    Description = package.Description,
+                    Tier = package.Tier,
+                    BaseCapacity = package.BaseCapacity,
+                    BaseDurationHours = package.BaseDurationHours,
+                    BasePrice = package.BasePrice,
+                    PricePerAdditionalPerson = package.PricePerAdditionalPerson,
+                    PricePerAdditionalHour = package.PricePerAdditionalHour,
+                    IncludesDecoration = package.IncludesDecoration,
+                    IncludesCake = package.IncludesCake,
+                    IncludesSoundSystem = package.IncludesSoundSystem,
+                    IncludedServicesDescription = package.IncludedServicesDescription,
+                    PackageServices = package.PackageServices.Select(s => new CreatePackageServiceDto
+                    {
+                        Name = s.Name,
+                        Description = s.Description,
+                        Price = s.Price,
+                        IsIncludedInPackage = s.IsIncludedInPackage,
+                        IsAvailableForCustomization = s.IsAvailableForCustomization
+                    }).ToList()
+                };
+            }
+            else
+            {
+                errorMessage = result.Error;
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Failed to load package: {ex.Message}";
+        }
+        StateHasChanged();
+    }
+
+    private void AddService()
+    {
+        if (!string.IsNullOrWhiteSpace(newService.Name))
+        {
+            packageModel.PackageServices.Add(new CreatePackageServiceDto
+            {
+                Name = newService.Name,
+                Description = newService.Description,
+                Price = newService.Price,
+                IsIncludedInPackage = true,
+                IsAvailableForCustomization = true
+            });
+            newService = new CreatePackageServiceDto();
+            isFormDirty = true;
+            StateHasChanged();
+        }
+    }
+
+    private void RemoveService(CreatePackageServiceDto service)
+    {
+        packageModel.PackageServices.Remove(service);
+        isFormDirty = true;
+        StateHasChanged();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        isSubmitting = true;
+        errorMessage = string.Empty;
+        successMessage = string.Empty;
+        try
+        {
+            var result = await PackageService.UpdatePackageAsync(Id, packageModel);
+            if (result.IsSuccess)
+            {
+                successMessage = "Package updated successfully!";
+                isFormDirty = false;
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/admin/packages");
+            }
+            else
+            {
+                errorMessage = result.Error ?? "Failed to update package";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isSubmitting = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task Cancel()
+    {
+        if (isFormDirty)
+        {
+            bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "You have unsaved changes. Are you sure you want to cancel?");
+            if (!confirm) return;
+        }
+        Navigation.NavigateTo("/admin/packages");
+    }
+}
